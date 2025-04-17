@@ -82,12 +82,20 @@
     let viewportWidth = 0; // Store viewport width
     let maxNegativeTranslate = 0; // Max scroll position
 
-    // --- Touch related variables ---
+    // --- Touch/Inertia related variables ---
     let isDragging = false;
     let startX = 0;
     let currentTranslate = 0;
     let prevTranslate = 0;
-    const swipeThreshold = 30; // Reduced threshold for swipe detection
+    // For velocity calculation
+    let lastMoveX = 0;
+    let lastMoveTime = 0;
+    let velocity = 0;
+    // For inertia animation
+    let animationFrameId = null;
+    const friction = 0.95; // Closer to 1 = less friction, longer scroll
+    const minVelocity = 0.5; // Velocity threshold to stop animation
+    // const swipeThreshold = 30; // No longer needed for snap logic
 
     function setupCarouselHeightAndSlides() {
         viewportWidth = carouselViewport.offsetWidth; // Store viewport width
@@ -154,6 +162,13 @@
         // Adjust currentTranslate based on potential resize, clamp within new bounds
         currentTranslate = Math.max(maxNegativeTranslate, Math.min(0, currentTranslate));
         prevTranslate = currentTranslate; // Sync prevTranslate
+        
+        // Cancel any ongoing animation on resize
+        if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
+        }
+        
         applyTransform(false); // Apply initial/resized transform without animation
         updateButtonStates(); // Update buttons based on current position
 
@@ -163,12 +178,18 @@
     // Renamed from updateCarouselState to clarify purpose (button clicks/programmatic changes)
     function animateToSlide(targetIndex) {
         if (totalSlides === 0) return;
+        
+        // Cancel any ongoing inertia animation before starting slide animation
+        if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
+        }
 
         currentIndex = Math.max(0, Math.min(targetIndex, maxIndex)); // Clamp target index
         currentTranslate = Math.max(maxNegativeTranslate, Math.min(0, -currentIndex * slideWidthPx));
         prevTranslate = currentTranslate; // Update prevTranslate for consistency
         
-        applyTransform(true); // Apply transform WITH animation
+        applyTransform(true); // Apply transform WITH CSS animation
         updateButtonStates(); // Update buttons
     }
 
@@ -217,34 +238,83 @@
       animateToSlide(currentClosestIndex + 1); // Animate to the next slide
     });
 
+    // --- Inertia Animation Loop ---
+    function inertiaScroll() {
+        if (Math.abs(velocity) < minVelocity) {
+            animationFrameId = null;
+            return; // Stop animation if velocity is too low
+        }
+
+        // Apply velocity
+        currentTranslate += velocity;
+        velocity *= friction; // Apply friction
+
+        // Clamp position within bounds
+        if (currentTranslate > 0) {
+            currentTranslate = 0;
+            velocity = 0; // Stop if hitting the start boundary
+        } else if (currentTranslate < maxNegativeTranslate) {
+            currentTranslate = maxNegativeTranslate;
+            velocity = 0; // Stop if hitting the end boundary
+        }
+
+        applyTransform(false); // Apply transform directly without CSS transition
+        updateButtonStates();
+
+        // Continue animation
+        animationFrameId = requestAnimationFrame(inertiaScroll);
+    }
+
     // --- Touch Event Listeners ---
     carouselViewport.addEventListener('touchstart', (e) => {
         if (totalSlides === 0) return;
+        
+        // Stop any ongoing inertia animation
+        if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
+        }
+        
         isDragging = true;
         startX = e.touches[0].clientX;
+        lastMoveX = startX; // Initialize for velocity calc
+        lastMoveTime = performance.now(); // Initialize for velocity calc
+        velocity = 0; // Reset velocity
+
+        // Get current position accurately
         const transformMatrix = window.getComputedStyle(carouselContainer).getPropertyValue('transform');
         if (transformMatrix !== 'none') {
-            prevTranslate = parseFloat(transformMatrix.split(',')[4] || 0);
-        } else {
-            // Fallback if transform is 'none' (shouldn't usually happen during interaction)
-            prevTranslate = currentTranslate; 
-        }
-        carouselContainer.style.transition = 'none';
+            currentTranslate = parseFloat(transformMatrix.split(',')[4] || 0);
+        } // else currentTranslate should hold the correct value from previous state
+        prevTranslate = currentTranslate; // Set prevTranslate to the exact start point
+        
+        carouselContainer.style.transition = 'none'; // Ensure no CSS transition during drag
         carouselViewport.style.cursor = 'grabbing';
     }, { passive: true }); 
 
     carouselViewport.addEventListener('touchmove', (e) => {
         if (!isDragging || totalSlides === 0) return;
+        
         const currentX = e.touches[0].clientX;
-        const deltaX = currentX - startX;
-        currentTranslate = prevTranslate + deltaX;
+        const currentTime = performance.now();
+        const deltaTime = currentTime - lastMoveTime;
+        const deltaX = currentX - lastMoveX;
 
-        // Clamp translation within bounds [maxNegativeTranslate, 0]
+        if (deltaTime > 0) { // Avoid division by zero
+            velocity = deltaX / deltaTime * 16.67; // Calculate velocity (px/frame approx)
+        }
+
+        currentTranslate = prevTranslate + (currentX - startX); // Calculate position based on start
+
+        // Clamp translation during drag
         currentTranslate = Math.max(maxNegativeTranslate, Math.min(0, currentTranslate));
 
-        // Apply immediate transform for visual feedback WITHOUT animation
-        applyTransform(false);
-        updateButtonStates(); // Update buttons immediately during drag
+        applyTransform(false); // Apply immediate transform
+        updateButtonStates();
+
+        // Update for next move calculation
+        lastMoveX = currentX;
+        lastMoveTime = currentTime;
     });
 
     carouselViewport.addEventListener('touchend', () => {
@@ -252,21 +322,34 @@
         isDragging = false;
         carouselViewport.style.cursor = 'grab';
 
-        // Store the final position achieved by dragging
-        prevTranslate = currentTranslate;
-        
-        // NO automatic snapping/animation here. Position is kept.
-        // Buttons are already updated during touchmove.
+        prevTranslate = currentTranslate; // Update prevTranslate to the final dragged position
+
+        // Start inertia animation only if velocity is significant
+        if (Math.abs(velocity) > minVelocity) {
+            // Ensure starting position is clamped before animation
+            currentTranslate = Math.max(maxNegativeTranslate, Math.min(0, currentTranslate));
+            animationFrameId = requestAnimationFrame(inertiaScroll);
+        } else {
+             // Optional: If velocity is too low, ensure final position is applied cleanly
+             applyTransform(false);
+             updateButtonStates();
+        }
     });
 
     carouselViewport.addEventListener('touchcancel', () => {
-        if (!isDragging || totalSlides === 0) return;
-        isDragging = false;
-        carouselViewport.style.cursor = 'grab';
-        // Optional: Snap back to prevTranslate if needed, but current behavior is likely fine
-        // currentTranslate = prevTranslate;
-        // applyTransform(false);
-        updateButtonStates(); 
+        if (totalSlides === 0) return; // Check added for safety
+        if (isDragging) { // Only act if dragging was in progress
+           isDragging = false;
+           carouselViewport.style.cursor = 'grab';
+           // Stop potentially running animation or apply final state
+           if (animationFrameId) {
+               cancelAnimationFrame(animationFrameId);
+               animationFrameId = null;
+           }
+           currentTranslate = prevTranslate; // Revert to position before cancel, or just ensure state
+           applyTransform(false);
+           updateButtonStates(); 
+        }
     });
 
     // --- Resize Listener ---
