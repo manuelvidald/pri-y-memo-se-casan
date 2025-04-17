@@ -49,12 +49,10 @@
 <!-- Swiper JS is now imported in the script -->
 
 <script>
-  // Import Swiper and its modules/styles
-  import Swiper from 'swiper';
-  import 'swiper/css'; // Core Swiper styles
-  import 'swiper/css/pagination'; // Pagination styles
-  // If using other modules like Navigation, FreeMode, etc., import their CSS too if needed.
-  // For FreeMode with momentum, core CSS is usually sufficient.
+  // Import Swiper bundle and its CSS
+  import Swiper from 'swiper/bundle'; 
+  import 'swiper/css/bundle'; // Includes core, pagination, etc.
+  // Removed previous separate CSS imports
 
   document.addEventListener('DOMContentLoaded', () => {
     const imageNames = Array.from({ length: 10 }, (_, i) => `love_story_${i + 1}.jpeg`);
