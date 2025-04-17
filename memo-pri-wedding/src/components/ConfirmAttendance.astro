@@ -12,42 +12,64 @@ const deadlineFormatted = deadlineDate.toLocaleDateString('es-AR', {
 
 // Link to the confirmation form (adjust if needed)
 const formLink = "/confirmacion"; // Placeholder link
+
+// Define border image paths
+const cornerTopLeft = "/images/cierre-arriba-izq.png";
+const cornerTopRight = "/images/cierre-arriba-der.png";
+const cornerBottomLeft = "/images/cierre-abajo-izq.png";
+const cornerBottomRight = "/images/cierre-abajo-der.png";
+const borderHorizontal = "/images/border-line-h.png";
+const borderVertical = "/images/border-line-v.png";
+
+// Define dimensions (adjust as needed)
+const cornerSize = "w-8"; // e.g., width 2rem, height will be auto
+const cornerOffset = "8"; // Corresponds to w-8 -> 2rem
+const lineThicknessH = "h-1"; // e.g., 0.25rem
+const lineThicknessV = "w-1"; // e.g., 0.25rem
+const padding = "p-10"; // Should be > cornerOffset (e.g., p-10 -> 2.5rem)
 ---
 
-<section id="attendance" class="section bg-white pt-12">
-  <div class="container mx-auto text-center">
-    <img src="/images/icon-rvsp.png" alt="RSVP Icon" class="mx-auto mb-4 w-16 h-16">
-    <h2 class="section-title text-[#004AAD]">RSVP</h2>
-    
+<section id="attendance" class="section bg-white py-12">
+  {/* Added container with relative positioning and padding */}
+  <div class={`container mx-auto text-center relative ${padding}`}>
+    {/* Border Elements */}
+    {/* Corners - Removed fixed height (h-8) to maintain aspect ratio */}
+    <img src={cornerTopLeft} alt="" class={`absolute top-0 left-0 ${cornerSize} z-10`} />
+    <img src={cornerTopRight} alt="" class={`absolute top-0 right-0 ${cornerSize} z-10`} />
+    <img src={cornerBottomLeft} alt="" class={`absolute bottom-0 left-0 ${cornerSize} z-10`} />
+    <img src={cornerBottomRight} alt="" class={`absolute bottom-0 right-0 ${cornerSize} z-10`} />
 
-    <div class="max-w-3xl mx-auto text-center px-12">
-      
-      
-      
+    {/* Lines - Temporarily using solid background colors for debugging */}
+    <div class={`absolute top-0 left-${cornerOffset} right-${cornerOffset} ${lineThicknessH} bg-red-500 z-0`}></div> {/* H-Top */}
+    <div class={`absolute bottom-0 left-${cornerOffset} right-${cornerOffset} ${lineThicknessH} bg-blue-500 z-0`}></div> {/* H-Bottom */}
+    <div class={`absolute left-0 top-${cornerOffset} bottom-${cornerOffset} ${lineThicknessV} bg-green-500 z-0`}></div> {/* V-Left */}
+    <div class={`absolute right-0 top-${cornerOffset} bottom-${cornerOffset} ${lineThicknessV} bg-yellow-500 z-0`}></div> {/* V-Right */}
 
-      
-      
-      
-      <p class="text-lg text-[#004AAD] mb-6 font-plex-sans font-light unified-text">No olvides confirmar tu asistencia y la de tus acompañantes antes del 20 de Octubre</p>
+    {/* Original Content - Wrapped in a div with relative z-10 to ensure it's above border lines */}
+    <div class="relative z-10">
+      <img src="/images/icon-rvsp.png" alt="RSVP Icon" class="mx-auto mb-4 w-16 h-16">
+      <h2 class="section-title text-[#004AAD]">RSVP</h2>
 
-      <div class="mt-6 flex flex-col items-center space-y-4">
-        <a href={formLink} 
-           class="w-48 inline-block px-6 py-2 rounded-full bg-white text-[#004AAD] border border-[#004AAD] text-sm hover:bg-[#004AAD] hover:text-white transition-colors duration-300 transform hover:scale-105 ease-in-out text-center focus:outline-none focus:ring-0 [-webkit-tap-highlight-color:transparent] active:bg-white active:text-[#004AAD] active:scale-100 active:duration-0 font-plex-sans font-light unified-text"
-           aria-label="Confirmar asistencia al evento"
-        >
-          Confirmar Ahora
-        </a>
-        <a href="https://www.google.com/calendar/render?action=TEMPLATE&text=Casamiento+de+Pri+y+Memo&dates=20251220T150000Z/20251221T070000Z&details=Casamiento+de+Priscila+y+Manuel&location=Lamadrid+54%2C+Bella+Vista&crm=AVAILABLE"
-           target="_blank"
-           rel="noopener noreferrer"
-           class="w-48 inline-block px-6 py-2 rounded-full bg-white text-[#004AAD] border border-[#004AAD] text-sm hover:bg-[#004AAD] hover:text-white transition-colors duration-300 transform hover:scale-105 ease-in-out text-center focus:outline-none focus:ring-0 [-webkit-tap-highlight-color:transparent] active:bg-white active:text-[#004AAD] active:scale-100 active:duration-0 font-plex-sans font-light unified-text"
-           aria-label="Agendar evento en Google Calendar"
-        >
-          Agendar
-        </a>
+      <div class="max-w-3xl mx-auto text-center px-12">
+        <p class="text-lg text-[#004AAD] mb-6 font-plex-sans font-light unified-text">No olvides confirmar tu asistencia y la de tus acompañantes antes del 20 de Octubre</p>
+
+        <div class="mt-6 flex flex-col items-center space-y-4">
+          <a href={formLink}
+             class="w-48 inline-block px-6 py-2 rounded-full bg-white text-[#004AAD] border border-[#004AAD] text-sm hover:bg-[#004AAD] hover:text-white transition-colors duration-300 transform hover:scale-105 ease-in-out text-center focus:outline-none focus:ring-0 [-webkit-tap-highlight-color:transparent] active:bg-white active:text-[#004AAD] active:scale-100 active:duration-0 font-plex-sans font-light unified-text"
+             aria-label="Confirmar asistencia al evento"
+          >
+            Confirmar Ahora
+          </a>
+          <a href="https://www.google.com/calendar/render?action=TEMPLATE&text=Casamiento+de+Pri+y+Memo&dates=20251220T150000Z/20251221T070000Z&details=Casamiento+de+Priscila+y+Manuel&location=Lamadrid+54%2C+Bella+Vista&crm=AVAILABLE"
+             target="_blank"
+             rel="noopener noreferrer"
+             class="w-48 inline-block px-6 py-2 rounded-full bg-white text-[#004AAD] border border-[#004AAD] text-sm hover:bg-[#004AAD] hover:text-white transition-colors duration-300 transform hover:scale-105 ease-in-out text-center focus:outline-none focus:ring-0 [-webkit-tap-highlight-color:transparent] active:bg-white active:text-[#004AAD] active:scale-100 active:duration-0 font-plex-sans font-light unified-text"
+             aria-label="Agendar evento en Google Calendar"
+          >
+            Agendar
+          </a>
+        </div>
       </div>
-
-      
     </div>
   </div>
 </section>
