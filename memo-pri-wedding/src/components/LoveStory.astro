@@ -72,7 +72,7 @@
     let startX = 0;
     let currentTranslate = 0;
     let prevTranslate = 0;
-    const swipeThreshold = 50; // Minimum pixels to swipe to change slide
+    const swipeThreshold = 30; // Reduced threshold for swipe detection
 
     function setupCarouselHeightAndSlides() {
         const viewportWidth = carouselViewport.offsetWidth;
@@ -84,6 +84,7 @@
 
         const slideWidthPx = viewportWidth / slidesVisible;
         carouselViewport.style.height = `${slideWidthPx}px`; // Maintain aspect ratio
+        carouselViewport.style.overscrollBehavior = 'contain'; // Prevent bounce effect
 
         carouselContainer.innerHTML = ''; // Clear existing placeholders if any
 
@@ -131,6 +132,7 @@
         currentIndex = Math.min(currentIndex, maxIndex); 
         
         updateCarouselState(false); // Update without animation initially
+        carouselViewport.style.cursor = 'grab';
     }
 
     function updateCarouselState(animate = true) {
@@ -207,20 +209,20 @@
 
         const movedBy = currentTranslate - prevTranslate;
         const maxIndex = Math.max(0, totalSlides - slidesVisible);
-        const slideWidthPx = carouselViewport.offsetWidth / slidesVisible;
+        // const slideWidthPx = carouselViewport.offsetWidth / slidesVisible; // Already defined above
 
-        // --- Modified Snap Logic ---
-        // Calculate the ideal index based on the final drag position
-        let targetIndex = Math.round(-currentTranslate / slideWidthPx);
+        // --- Reworked Snap Logic ---
+        // Determine index change based on swipe distance and direction
+        if (Math.abs(movedBy) > swipeThreshold) {
+            if (movedBy < 0) { // Swiped left (towards next)
+                currentIndex = Math.min(currentIndex + 1, maxIndex);
+            } else { // Swiped right (towards previous)
+                currentIndex = Math.max(currentIndex - 1, 0);
+            }
+        } // Else: If swipe is too small, snap back to the original currentIndex (no change)
+        // --- End Reworked Snap Logic ---
 
-        // Clamp the index within valid bounds
-        targetIndex = Math.max(0, Math.min(targetIndex, maxIndex));
-
-        // Set the current index to the calculated target
-        currentIndex = targetIndex;
-        // --- End Modified Snap Logic ---
-
-        // Snap to the determined index
+        // Snap to the updated or original currentIndex
         updateCarouselState(); 
     });
 
