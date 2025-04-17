@@ -1,0 +1,76 @@
+---
+// Puedes pasar props si necesitas personalizar el header
+---
+
+<section id="header" class="relative min-h-screen text-center">
+  
+  <div class="absolute inset-x-0 top-36 bottom-48 z-10 flex flex-col justify-center items-center px-4">
+    
+    <p class="font-lichtner text-sm md:text-base mb-2 uppercase tracking-widest">
+      • NOS CASAMOS •
+    </p>
+
+    <!-- Remplazar el H1 con la imagen -->
+    <div class="text-center mb-1">
+      <img 
+        src="/images/priscila_y_manuel_blue.png" 
+        alt="Priscila y Manuel" 
+        class="inline-block h-28 md:h-36" 
+      />
+    </div>
+    
+    <div class="my-1">
+      <p class="font-lichtner text-lg md:text-xl uppercase">
+        20 de diciembre 2025
+      </p>
+    </div>
+    
+    <!-- Imagen de los anillos eliminada -->
+
+    <!-- Eliminado el botón AGENDAR de aquí, se moverá a SaveTheDate -->
+
+  </div>
+
+  <!-- Florcitas Image -->
+  <img
+    src="/images/florcitas_header.png"
+    alt="Florcitas decorativas"
+    class="absolute bottom-0 right-4 h-48 w-auto"
+  />
+
+</section>
+
+<style>
+  /* Import Google Font */
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+
+  /* Define custom font */
+  @font-face {
+    font-family: 'Lichtner';
+    src: url('/fonts/lichtner.ttf') format('truetype');
+    /* Add other formats like woff, woff2 if available for better compatibility */
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  #header {
+    background-color: white; /* Apply white background */
+    /* background-image: url('/images/cardboard-texture.png'); */ /* Remove background image */
+    background-size: cover; /* Keep or remove based on design needs */
+    background-position: center; /* Keep or remove based on design needs */
+    color: #004AAD;
+  }
+
+  /* Create a utility class for the font */
+  .font-playfair-display {
+    font-family: "Playfair Display", serif; /* Add fallback font */
+    font-weight: 400; /* Ensure normal weight */
+  }
+
+  /* Utility class for custom font */
+  .font-lichtner {
+    font-family: 'Lichtner', sans-serif; /* Add fallback font */
+  }
+</style>
+
+<!-- Script del contador movido a Countdown.astro -->

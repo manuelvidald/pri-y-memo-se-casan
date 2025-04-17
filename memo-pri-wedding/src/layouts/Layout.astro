@@ -1,0 +1,90 @@
+---
+import '../styles/global.css';
+import NavBar from '../components/NavBar.astro';
+import Footer from '../components/Footer.astro';
+import Chatbot from '../components/Chatbot/Chatbot.astro';
+
+export interface Props {
+  title: string;
+  description?: string;
+}
+
+const { 
+  title,
+  description = "Sitio web del casamiento de Memo y Pri. Acompáñanos en nuestro día especial."
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#073C77" />
+    <title>{title}</title>
+  </head>
+  <body class="min-h-screen bg-white">
+    <NavBar />
+    <main class="flex-grow">
+      <slot />
+    </main>
+    <Footer />
+    <Chatbot />
+    
+    <script>
+      // Script para manejar la carga optimizada de imágenes
+      document.addEventListener('DOMContentLoaded', () => {
+        const lazyImages = document.querySelectorAll('img[loading="lazy"]');
+        
+        if ('loading' in HTMLImageElement.prototype) {
+          // El navegador soporta lazy loading nativo
+          console.log('El navegador soporta lazy loading nativo');
+        } else {
+          // Implementar lazy loading con IntersectionObserver para navegadores antiguos
+          const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                const image = entry.target;
+                const src = image.getAttribute('data-src');
+                if (src) {
+                  image.setAttribute('src', src);
+                  image.removeAttribute('data-src');
+                }
+                observer.unobserve(image);
+              }
+            });
+          });
+          
+          lazyImages.forEach(image => {
+            imageObserver.observe(image);
+          });
+        }
+      });
+    </script>
+    
+    <!-- ScrollReveal CDN -->
+    <script src="https://unpkg.com/scrollreveal"></script>
+    
+    <!-- ScrollReveal Initialization -->
+    <script is:inline>
+      document.addEventListener('astro:page-load', () => {
+        ScrollReveal({
+          // reset: true, // Descomenta si quieres que la animación se repita cada vez que el elemento entra en pantalla
+          distance: '60px',
+          duration: 800,
+          easing: 'ease-out',
+          origin: 'bottom',
+          delay: 100,
+        });
+        
+        // Aplicar efecto a elementos comunes con un intervalo
+        ScrollReveal().reveal('section, h1, h2, h3, h4, h5, h6, p, img, a[role=\"button\"], form, li', {
+          interval: 150 
+        });
+      });
+    </script>
+  </body>
+</html>

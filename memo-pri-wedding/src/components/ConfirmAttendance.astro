@@ -1,0 +1,54 @@
+---
+// Calculate confirmation deadline
+const weddingDay = new Date(2025, 11, 20); // Month is 0-indexed (11 = December)
+const deadlineDate = new Date(weddingDay);
+deadlineDate.setMonth(deadlineDate.getMonth() - 1);
+
+const deadlineFormatted = deadlineDate.toLocaleDateString('es-AR', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+});
+
+// Link to the confirmation form (adjust if needed)
+const formLink = "/confirmacion"; // Placeholder link
+---
+
+<section id="attendance" class="section bg-white">
+  <div class="container mx-auto text-center">
+    <h2 class="section-title text-[#004AAD]">RSVP</h2>
+    
+
+    <div class="max-w-2xl mx-auto text-center">
+      
+      
+      
+
+      
+      
+      
+      <p class="text-lg text-[#004AAD] mb-6">No olvides confirmar tu asistencia y la de tus acompañantes antes del 20 de Octubre</p>
+
+      <div class="mt-6 flex flex-col items-center space-y-4">
+        <a href={formLink} 
+           class="w-48 inline-block px-6 py-2 rounded-full bg-white text-[#004AAD] border border-[#004AAD] text-sm hover:bg-[#004AAD] hover:text-white transition-colors duration-300 transform hover:scale-105 ease-in-out text-center"
+           aria-label="Confirmar asistencia al evento"
+        >
+          Confirmar Ahora
+        </a>
+        <a href="https://www.google.com/calendar/render?action=TEMPLATE&text=Casamiento+de+Pri+y+Memo&dates=20251220T150000Z/20251221T070000Z&details=Casamiento+de+Priscila+y+Manuel&location=Lamadrid+54%2C+Bella+Vista&crm=AVAILABLE"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="w-48 inline-block px-6 py-2 rounded-full bg-white text-[#004AAD] border border-[#004AAD] text-sm hover:bg-[#004AAD] hover:text-white transition-colors duration-300 transform hover:scale-105 ease-in-out text-center"
+           aria-label="Agendar evento en Google Calendar"
+        >
+          Agendar
+        </a>
+      </div>
+
+      
+    </div>
+  </div>
+</section>
+
+<!-- Removed the form and associated script -->

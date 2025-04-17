@@ -1,0 +1,78 @@
+---
+import { Icon } from 'astro-icon/components';
+
+const weddingTimeline = [
+  {
+    title: "CEREMONIA",
+    time: "12:00 Hs",
+    icon: "/images/icon-anillos.png"
+  },
+  {
+    title: "BRINDIS",
+    time: "14:00 Hs",
+    icon: "/images/icon-brindis.png" // Corrected filename from user prompt
+  },
+  {
+    title: "COMIDA",
+    time: "14:30 Hs",
+    icon: "/images/icon-comida.png"
+  },
+  {
+    title: "FIESTA",
+    time: "16:00 Hs",
+    icon: "/images/icon-fiesta.png"
+  }
+];
+---
+
+<section id="timeline" class="section bg-white py-12 md:py-16"> {/* Removed global font */}
+  <div class="container mx-auto px-4">
+    <h2 class="section-title text-blue-dark">TIMELINE</h2>
+
+    {/* Mobile View: Vertical Timeline - Centered */}
+    <div class="relative md:hidden mt-12 max-w-xs mx-auto">
+      {/* Removed Vertical connecting line */}
+
+      <div class="space-y-8 flex flex-col items-center"> {/* Centered column layout, reduced spacing */}
+        {weddingTimeline.map((item, index) => (
+          <div class="flex flex-col items-center text-center"> {/* Centered column for each item */}
+            {/* Icon */}
+            <div class="mb-2">
+               <img src={item.icon} alt={`${item.title} Icon`} class="h-16 w-16 object-contain mx-auto" /> {/* Increased size */}
+            </div>
+            {/* Content */}
+            <div class="mt-1"> 
+              <p class="text-md text-blue-dark">{item.time}</p>
+              <p class="text-md text-blue-dark mt-1 uppercase tracking-wider">{item.title}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    {/* Desktop View: Horizontal Timeline - Centered */}
+    <div class="hidden md:block relative max-w-3xl lg:max-w-4xl mx-auto mt-16">
+      {/* Removed Horizontal connecting line */}
+
+      {/* Use flex grid for centering and spacing */}
+      <div class="flex justify-center items-start space-x-8 lg:space-x-16"> {/* Centered row, adjust spacing */}
+        {weddingTimeline.map((item, index) => (
+          <div class="timeline-point flex-shrink-0 w-32 flex flex-col items-center text-center"> 
+            {/* Icon */}
+            <div class="mb-2">
+                 <img src={item.icon} alt={`${item.title} Icon`} class="h-16 w-16 object-contain mx-auto" /> {/* Increased size */}
+            </div>
+            {/* Content */}
+            <p class="text-md text-blue-dark mt-2">{item.time}</p>
+            <p class="text-md text-blue-dark mt-1 uppercase tracking-wider">{item.title}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Optional: Add specific styles if Tailwind isn't enough */
+  /* Ensure the container has enough height in vertical mode if needed */
+</style>

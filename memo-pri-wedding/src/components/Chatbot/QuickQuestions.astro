@@ -1,0 +1,24 @@
+---
+const questions = [
+  "¿Cuándo es el casamiento?",
+  "¿Dónde se realizará la ceremonia?",
+  "¿Cuál es el código de vestimenta?",
+  "¿Cómo confirmo mi asistencia?",
+  "¿Hay hotel recomendado?",
+  "¿Cómo llego al lugar?",
+];
+---
+
+<div class="px-3 py-2 bg-white border-t border-blue-light border-opacity-30">
+  <p class="text-xs text-pink-medium mb-2 font-ibm-plex">Preguntas frecuentes:</p>
+  <div class="flex flex-wrap gap-2 justify-center">
+    {questions.map(question => (
+      <button 
+        class="quick-question text-xs font-ibm-plex bg-white border border-blue-light rounded-full px-3 py-1 text-blue-medium hover:bg-blue-light hover:text-blue-dark transition-colors focus:outline-none focus:ring-1 focus:ring-pink-medium"
+        data-question={question}
+      >
+        {question}
+      </button>
+    ))}
+  </div>
+</div>

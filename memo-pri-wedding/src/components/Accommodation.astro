@@ -1,0 +1,184 @@
+---
+// Placeholder data - Replace with real information
+const bellaVistaHotels = [
+  { 
+    name: "Hotel Bella Vista Plaza (Ejemplo)", 
+    stars: "★★★", 
+    distanceKm: 1.5, 
+    distanceTime: 5, 
+    priceARS: "$$$", priceUSD: "$$", priceEUR: "$$",
+    link: "#", 
+    transport: "Taxi, Remis, Colectivo cercano",
+    reason: "Ubicación céntrica en Bella Vista, buenas reseñas."
+  },
+  { 
+    name: "Apart Hotel Los Aromos (Ejemplo)", 
+    stars: "★★", 
+    distanceKm: 3, 
+    distanceTime: 10, 
+    priceARS: "$$", priceUSD: "$", priceEUR: "$",
+    link: "#", 
+    transport: "Requiere auto/taxi",
+    reason: "Opción más económica con cocina, ideal para estadías largas."
+  },
+  { 
+    name: "Posada del Sol (Ejemplo)", 
+    stars: "★★★", 
+    distanceKm: 2, 
+    distanceTime: 7, 
+    priceARS: "$$$", priceUSD: "$$", priceEUR: "$$",
+    link: "#", 
+    transport: "Taxi, Remis",
+    reason: "Ambiente tranquilo, jardín agradable."
+  },
+  // Add 1-2 more options if desired
+];
+
+const sanMiguelHotels = [
+  { 
+    name: "Hotel San Miguel Palace (Ejemplo)", 
+    stars: "★★★★", 
+    distanceKm: 5, 
+    distanceTime: 15, 
+    priceARS: "$$$$$", priceUSD: "$$$", priceEUR: "$$$",
+    link: "#", 
+    transport: "Taxi, Remis, Tren (estación cercana)",
+    reason: "Hotel con más servicios en el centro de San Miguel."
+  },
+  // Add more options
+];
+
+const airbnbSearchLink = "https://www.airbnb.com.ar/s/Bella-Vista--Buenos-Aires--Argentina/homes?..."; // Replace with actual filtered link
+---
+
+<section id="accommodation" class="section bg-white">
+  <div class="container mx-auto px-4">
+    <h2 class="section-title text-blue-dark">Alojamiento</h2>
+    <p class="section-subtitle mb-10">Opciones recomendadas para tu estancia</p>
+
+    <div class="max-w-5xl mx-auto">
+      <!-- Tab Buttons -->
+      <div class="border-b border-gray-200">
+        <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="accommodationTabs" data-tabs-toggle="#accommodationTabContent" role="tablist">
+          <li class="mr-2" role="presentation">
+            <button class="inline-block p-4 border-b-2" id="bellavista-tab" data-tabs-target="#bellavista" type="button" role="tab" aria-controls="bellavista" aria-selected="true">En Bella Vista</button>
+          </li>
+          <li class="mr-2" role="presentation">
+            <button class="inline-block p-4 border-b-2 hover:text-gray-600 hover:border-gray-300" id="cerca-tab" data-tabs-target="#cerca" type="button" role="tab" aria-controls="cerca" aria-selected="false">Cerca de Bella Vista</button>
+          </li>
+          <li class="mr-2" role="presentation">
+            <button class="inline-block p-4 border-b-2 hover:text-gray-600 hover:border-gray-300" id="airbnb-tab" data-tabs-target="#airbnb" type="button" role="tab" aria-controls="airbnb" aria-selected="false">Airbnb</button>
+          </li>
+          <li role="presentation">
+            <button class="inline-block p-4 border-b-2 hover:text-gray-600 hover:border-gray-300" id="capital-tab" data-tabs-target="#capital" type="button" role="tab" aria-controls="capital" aria-selected="false">En Corrientes Capital</button>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Tab Content -->
+      <div id="accommodationTabContent" class="mb-12">
+        <!-- Bella Vista Tab -->
+        <div class="hidden p-6 bg-white rounded-lg shadow-inner" id="bellavista" role="tabpanel" aria-labelledby="bellavista-tab">
+          <h3 class="text-xl font-playfair mb-4 text-text-main">Bellavista Suites</h3>
+          <div class="bg-white p-4 border border-gray-200 rounded-lg">
+            <p class="mb-2 text-text-main">Para una opción más premium en Tanti, justo frente a la parada del colectivo que viene de Córdoba Capital.</p>
+            <p class="text-sm text-gray-600 mb-2">Dirección: Ruta Provincial 28 1145, Tanti, Córdoba</p>
+            <p class="text-sm text-text-main mb-2">{bellaVistaHotels[0].reason}</p>
+            <p class="text-sm text-text-main mb-2">Transporte: <span class="font-medium">{bellaVistaHotels[0].transport}</span></p>
+            <p class="text-sm text-text-main mb-3">Precios (aprox): <span class="font-semibold">ARS:</span> {bellaVistaHotels[0].priceARS} | <span class="font-semibold">USD:</span> {bellaVistaHotels[0].priceUSD} | <span class="font-semibold">EUR:</span> {bellaVistaHotels[0].priceEUR}</p>
+            <a href={bellaVistaHotels[0].link} target="_blank" rel="noopener noreferrer" class="text-sm text-text-main hover:underline font-medium">Ver / Reservar →</a>
+          </div>
+          <p class="text-xs text-text-main mt-4 italic">Nota: Precios y disponibilidad sujetos a cambios. Verificar directamente.</p>
+        </div>
+        
+        <!-- Cerca (San Miguel) Tab -->
+        <div class="hidden p-6 bg-white rounded-lg shadow-inner" id="cerca" role="tabpanel" aria-labelledby="cerca-tab">
+          <h3 class="text-xl font-playfair mb-4 text-text-main">Cerca del salón</h3>
+          <div class="bg-white p-4 border border-gray-200 rounded-lg">
+            <p class="mb-2 text-text-main">Hay muchas cabañas y alojamientos económicos en Tanti pueblo, alrededor del salón Bellavista Suites. Podéis buscar en Booking o plataformas similares.</p>
+            <p class="text-sm text-gray-600 mb-2">Sugerencia: Buscar "cabañas en Tanti"</p>
+            <p class="text-sm text-text-main mb-2">{sanMiguelHotels[0].reason}</p>
+            <p class="text-sm text-text-main mb-2">Transporte: <span class="font-medium">{sanMiguelHotels[0].transport}</span></p>
+            <p class="text-sm text-text-main mb-3">Precios (aprox): <span class="font-semibold">ARS:</span> {sanMiguelHotels[0].priceARS} | <span class="font-semibold">USD:</span> {sanMiguelHotels[0].priceUSD} | <span class="font-semibold">EUR:</span> {sanMiguelHotels[0].priceEUR}</p>
+            <a href={sanMiguelHotels[0].link} target="_blank" rel="noopener noreferrer" class="text-sm text-text-main hover:underline font-medium">Ver / Reservar →</a>
+          </div>
+        </div>
+        
+        <!-- Airbnb Tab -->
+        <div class="hidden p-6 bg-white rounded-lg shadow-inner" id="airbnb" role="tabpanel" aria-labelledby="airbnb-tab">
+          <h3 class="text-xl font-playfair mb-4 text-text-main">Airbnb / Booking</h3>
+          <p class="mb-4 text-text-main">Existen muchas opciones en las plataformas de Airbnb y Booking tanto en Tanti como en Villa Carlos Paz (a 20 minutos en coche). Recomendamos buscar con antelación.</p>
+          <p class="text-text-main mb-4">
+            Usa este enlace para buscar alojamientos en la zona para las fechas cercanas a la boda:
+          </p>
+          <a href={airbnbSearchLink} target="_blank" rel="noopener noreferrer" class="elegant-btn secondary">
+            Buscar en Airbnb
+          </a>
+          <p class="text-xs text-text-main mt-4 italic">Asegúrate de revisar bien las ubicaciones y reseñas antes de reservar.</p>
+        </div>
+        
+        <!-- Buenos Aires Capital Tab -->
+        <div class="hidden p-6 bg-white rounded-lg shadow-inner" id="capital" role="tabpanel" aria-labelledby="capital-tab">
+          <h3 class="text-xl font-playfair mb-4 text-text-main">Córdoba Capital</h3>
+          <p class="mb-4 text-text-main">Si preferís alojaros en la ciudad, Córdoba Capital está a unos 50 minutos en coche del lugar del evento. Ofrece una amplia gama de hoteles y alojamientos.</p>
+          <p class="text-text-main italic">[Puedes añadir aquí recomendaciones de barrios o zonas específicas en CABA si lo deseas]</p>
+        </div>
+      </div>
+
+       <!-- General Booking Tips -->
+      <div class="mt-12 border-t border-gray-200 pt-8">
+        <h3 class="text-lg font-semibold text-text-main mb-3 text-center">Consejos para Reservar</h3>
+        <ul class="list-disc list-inside text-sm text-text-main space-y-2 max-w-md mx-auto">
+          <li><strong class="font-medium">Reserva pronto:</strong> Especialmente si viajas desde lejos, asegurar tu alojamiento y transporte con tiempo es clave.</li>
+          <li><strong class="font-medium">Considera el transporte:</strong> Piensa cómo te moverás entre tu alojamiento y el lugar del evento. Alquilar coche, coordinar con otros invitados o usar remises locales son opciones.</li>
+          <li><strong class="font-medium">Verifica la ubicación:</strong> Asegúrate de que la ubicación del alojamiento sea conveniente para ti.</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+  // Script para manejar los tabs (similar al de HowToArrive)
+  document.addEventListener('DOMContentLoaded', () => {
+    const tabs = document.querySelectorAll('#accommodationTabs [data-tabs-target]');
+    const tabContents = document.querySelectorAll('#accommodationTabContent > div');
+    
+    const switchAccomTab = (targetId) => {
+      tabContents.forEach(content => {
+        if ('#' + content.id === targetId) {
+          content.classList.remove('hidden');
+        } else {
+          content.classList.add('hidden');
+        }
+      });
+      tabs.forEach(tab => {
+        if (tab.getAttribute('data-tabs-target') === targetId) {
+          tab.setAttribute('aria-selected', 'true');
+          tab.classList.add('border-blue-dark', 'text-text-main'); // Active tab style - Changed text color
+          tab.classList.remove('border-transparent', 'hover:text-gray-600', 'hover:border-gray-300');
+        } else {
+          tab.setAttribute('aria-selected', 'false');
+          tab.classList.remove('border-blue-dark', 'text-text-main'); // Changed text color
+          tab.classList.add('border-transparent', 'hover:text-gray-600', 'hover:border-gray-300'); // Kept hover color
+        }
+      });
+    };
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', (e) => {
+        const targetId = e.currentTarget.getAttribute('data-tabs-target');
+        switchAccomTab(targetId);
+      });
+    });
+
+    // Activate the first tab initially
+    if (tabs.length > 0) {
+       const firstTabTarget = tabs[0].getAttribute('data-tabs-target');
+       switchAccomTab(firstTabTarget);
+    } else {
+        tabs.forEach(tab => tab.classList.add('border-transparent')); // Default if no tabs
+    }
+  });
+</script>

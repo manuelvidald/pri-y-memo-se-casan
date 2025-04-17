@@ -1,0 +1,107 @@
+@import url('https://fonts.googleapis.com/css2?family=Antic+Didone&family=Dancing+Script:wght@400;500;600;700&family=IBM+Plex+Sans:wght@100;300;400;500;600;700&family=Miltonian+One&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&family=Raleway:wght@400&display=swap');
+
+/* Define custom fonts */
+@font-face {
+  font-family: 'Malone Clemettine Serif';
+  src: url('/fonts/malone-clemettine-serif-2.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Serendipity Boutique Script';
+  src: url('/fonts/Serandipity-Boutique-Script-BF65324e3d30713.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Milton One Normal';
+  src: url('/fonts/Milton_One.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+  
+  body {
+    @apply font-ibm-plex-sans font-thin text-text-main bg-paper-beige;
+    line-height: 1.6;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-playfair;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-6 py-3 border border-invitation-blue bg-transparent rounded-none transition-colors duration-300 font-medium text-center inline-block text-text-main hover:bg-invitation-blue hover:text-white;
+  }
+  
+  .btn-primary {
+    @apply border-invitation-blue text-text-main hover:bg-invitation-blue hover:text-white;
+  }
+  
+  .btn-secondary {
+    @apply border-invitation-blue text-text-main hover:bg-invitation-blue hover:text-white opacity-80;
+  }
+  
+  .section {
+    @apply py-16 md:py-24 px-4;
+    background-size: cover; /* Or contain, depending on desired effect */
+    background-position: center;
+    background-repeat: no-repeat; /* Or repeat if the texture is tileable */
+  }
+  
+  .section-title {
+    @apply text-2xl md:text-3xl font-malone-clemettine text-center mb-10 text-[#004AAD] uppercase tracking-widest;
+  }
+
+  .section-subtitle {
+    @apply text-xl md:text-2xl italic text-text-main mb-6 text-center;
+  }
+
+  /* Minimalist style elements inspired by invitation */
+  .card {
+    @apply bg-white shadow-none border-0 p-6;
+  }
+  
+  .container {
+    @apply mx-auto px-4 max-w-6xl;
+  }
+  
+  .divider {
+    @apply h-px bg-invitation-blue my-8 w-full opacity-20;
+  }
+  
+  .highlight {
+    @apply text-text-main font-medium;
+  }
+  
+  .text-accent {
+    @apply text-text-main;
+  }
+  
+  .elegant-text {
+    @apply font-playfair text-text-main uppercase tracking-widest;
+  }
+  
+  .elegant-script {
+    @apply font-montserrat italic text-text-main;
+  }
+  
+  .elegant-btn {
+    @apply uppercase text-xs tracking-widest border border-invitation-blue text-text-main px-6 py-3 hover:bg-invitation-blue hover:text-white transition-colors duration-300;
+  }
+}

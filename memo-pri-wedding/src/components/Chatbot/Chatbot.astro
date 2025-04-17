@@ -1,0 +1,202 @@
+---
+import ChatbotButton from './ChatbotButton.astro';
+import ChatbotWindow from './ChatbotWindow.astro';
+---
+
+<div class="fixed bottom-6 right-6 z-50">
+  <ChatbotButton />
+  <ChatbotWindow />
+</div>
+
+<script>
+  // Script para controlar el comportamiento del chatbot
+  document.addEventListener('DOMContentLoaded', () => {
+    const chatbotButton = document.getElementById('chatbot-button');
+    const chatbotWindow = document.getElementById('chatbot-window');
+    const minimizeButton = document.getElementById('chatbot-minimize');
+    const chatForm = document.getElementById('chat-form');
+    const userInput = document.getElementById('user-message');
+    const messagesContainer = document.getElementById('chat-messages');
+    const quickQuestions = document.querySelectorAll('.quick-question');
+    
+    // Función para mostrar/ocultar chatbot
+    const toggleChatbot = () => {
+      if (chatbotWindow) {
+        chatbotWindow.classList.toggle('hidden');
+        // Si está visible, enfocar el input
+        if (!chatbotWindow.classList.contains('hidden') && userInput) {
+          userInput.focus();
+        }
+      }
+    };
+    
+    // Abrir/cerrar chatbot
+    if (chatbotButton) {
+      chatbotButton.addEventListener('click', toggleChatbot);
+    }
+    
+    // Minimizar chatbot
+    if (minimizeButton) {
+      minimizeButton.addEventListener('click', toggleChatbot);
+    }
+    
+    // Envío de mensajes
+    if (chatForm && userInput && messagesContainer) {
+      chatForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const message = userInput.value.trim();
+        if (!message) return;
+        
+        // Agregar mensaje del usuario
+        addMessage(message, 'user');
+        
+        // Limpiar input
+        userInput.value = '';
+        
+        // Mostrar indicador de escritura
+        showTypingIndicator();
+        
+        try {
+          // Realizar petición a la API de Gemini (simulada por ahora)
+          const response = await getChatbotResponse(message);
+          
+          // Ocultar indicador de escritura
+          hideTypingIndicator();
+          
+          // Agregar respuesta del chatbot
+          addMessage(response, 'bot');
+        } catch (error) {
+          console.error('Error al obtener respuesta:', error);
+          
+          // Ocultar indicador de escritura
+          hideTypingIndicator();
+          
+          // Mostrar mensaje de error
+          addMessage('Lo siento, ha ocurrido un error. Por favor, intenta de nuevo más tarde.', 'bot error');
+        }
+      });
+    }
+    
+    // Manejo de preguntas rápidas
+    if (quickQuestions) {
+      quickQuestions.forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (userInput && chatForm) {
+            userInput.value = btn.textContent || btn.innerText;
+            chatForm.dispatchEvent(new Event('submit'));
+          }
+        });
+      });
+    }
+    
+    // Funciones helper
+    function addMessage(text, type) {
+      if (!messagesContainer) return;
+      
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${type}-message`;
+      
+      // Si es un mensaje de bot, agregar avatar
+      if (type.includes('bot')) {
+        const avatarDiv = document.createElement('div');
+        avatarDiv.className = 'avatar';
+        avatarDiv.innerHTML = `
+          <div class="w-8 h-8 rounded-full bg-white border border-gray-300 flex items-center justify-center text-black font-script">MP</div>
+        `;
+        messageDiv.appendChild(avatarDiv);
+      }
+      
+      const contentDiv = document.createElement('div');
+      contentDiv.className = 'content';
+      contentDiv.textContent = text;
+      messageDiv.appendChild(contentDiv);
+      
+      messagesContainer.appendChild(messageDiv);
+      
+      // Hacer scroll al final de los mensajes
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+    
+    function showTypingIndicator() {
+      if (!messagesContainer) return;
+      
+      const typingDiv = document.createElement('div');
+      typingDiv.id = 'typing-indicator';
+      typingDiv.className = 'message bot-message typing';
+      
+      const avatarDiv = document.createElement('div');
+      avatarDiv.className = 'avatar';
+      avatarDiv.innerHTML = `
+        <div class="w-8 h-8 rounded-full bg-white border border-gray-300 flex items-center justify-center text-black font-script">MP</div>
+      `;
+      typingDiv.appendChild(avatarDiv);
+      
+      const contentDiv = document.createElement('div');
+      contentDiv.className = 'content';
+      contentDiv.innerHTML = `
+        <div class="typing-dots">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      `;
+      typingDiv.appendChild(contentDiv);
+      
+      messagesContainer.appendChild(typingDiv);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+    
+    function hideTypingIndicator() {
+      const typingIndicator = document.getElementById('typing-indicator');
+      if (typingIndicator) {
+        typingIndicator.remove();
+      }
+    }
+    
+    // Función para obtener respuesta del chatbot (simulada por ahora)
+    async function getChatbotResponse(message) {
+      try {
+        // Realizar petición a la API local en lugar de Gemini
+        const response = await fetch('/api/gemini', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ message }),
+        });
+        
+        if (!response.ok) {
+          throw new Error('Error en la respuesta de la API');
+        }
+        
+        const data = await response.json();
+        return data.response;
+      } catch (error) {
+        console.error('Error al obtener respuesta de la API:', error);
+        // Fallback a respuestas locales si la API falla
+        return getFallbackResponse(message);
+      }
+    }
+    
+    // Respuestas de fallback locales en caso de que la API falle
+    function getFallbackResponse(message) {
+      const normalizedMessage = message.toLowerCase().trim();
+      
+      if (normalizedMessage.includes('hora') && normalizedMessage.includes('ceremonia')) {
+        return 'La ceremonia comenzará a las 17:00 horas en la Capilla Nuestra Señora del Carmen.';
+      } else if (normalizedMessage.includes('dress code') || normalizedMessage.includes('vestimenta')) {
+        return 'El código de vestimenta es "Elegancia casual de playa". Recomendamos ropa fresca pero elegante, en tonos claros.';
+      } else if (normalizedMessage.includes('regalo') || normalizedMessage.includes('mesa de regalo')) {
+        return 'Tenemos mesas de regalo en Liverpool, Amazon y Palacio de Hierro. También puedes contribuir a nuestro fondo de luna de miel.';
+      } else {
+        return '¡Gracias por tu mensaje! Puedes encontrar toda la información sobre nuestro casamiento en las diferentes secciones del sitio web.';
+      }
+    }
+    
+    // Mensaje de bienvenida
+    setTimeout(() => {
+      addMessage('¡Hola! Somos Pri y Memo. ¿En qué podemos ayudarte?', 'bot');
+    }, 1000);
+  });
+</script>

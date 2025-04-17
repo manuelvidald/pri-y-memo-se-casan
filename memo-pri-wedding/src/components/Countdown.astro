@@ -1,0 +1,123 @@
+<section id="countdown" class="py-2 text-center bg-[#004AAD] text-white">
+  <div class="container mx-auto px-4">
+    <h2 class="section-title text-white mb-1">Faltan</h2>
+    <div class="grid grid-cols-4 gap-2 md:gap-4 max-w-[14rem] md:max-w-[16rem] mx-auto">
+      <div class="text-center">
+        <span class="block text-2xl md:text-3xl font-playfair" id="days">000</span>
+        <span class="font-serithai text-xs uppercase tracking-widest">días</span>
+      </div>
+      <div class="text-center">
+        <span class="block text-2xl md:text-3xl font-playfair" id="hours">00</span>
+        <span class="font-serithai text-xs uppercase tracking-widest">horas</span>
+      </div>
+      <div class="text-center">
+        <span class="block text-2xl md:text-3xl font-playfair" id="minutes">00</span>
+        <span class="font-serithai text-xs uppercase tracking-widest">min</span>
+      </div>
+      <div class="text-center">
+        <span class="block text-2xl md:text-3xl font-playfair" id="seconds">00</span>
+        <span class="font-serithai text-xs uppercase tracking-widest">seg</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Import Google Font - needed here if not global */
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+  /* You might want to import SeriThai as well if used extensively or move imports to a global CSS */
+  @import url('https://fonts.googleapis.com/css2?family=Roboto+Serif:ital,opsz,wght@0,8..144,100..900;1,8..144,100..900&display=swap'); /* Example: Assuming SeriThai is Roboto Serif */
+
+  /* Define custom font */
+  @font-face {
+    font-family: 'Lichtner';
+    src: url('/fonts/lichtner.ttf') format('truetype');
+    /* Add other formats like woff, woff2 if available for better compatibility */
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  /* Apply fonts if needed */
+  .font-playfair {
+    font-family: "Playfair Display", serif;
+  }
+  .font-serithai {
+    font-family: "Roboto Serif", serif; /* Adjust if SeriThai is a different font */
+  }
+  /* Utility class for custom font */
+  .font-lichtner {
+    font-family: 'Lichtner', sans-serif; /* Add fallback font */
+  }
+  /* Add any specific styles for the countdown section if needed */
+</style>
+
+<script>
+  // Contador regresivo para el casamiento
+  const weddingDate = new Date('December 20, 2025 16:00:00').getTime();
+
+  // Function to run querySelector safely
+  const querySelectorSafe = (selector) => {
+    try {
+      return document.querySelector(selector);
+    } catch (e) {
+      console.error(`Error finding element with selector: ${selector}`, e);
+      return null;
+    }
+  }
+
+  const daysEl = querySelectorSafe('#days');
+  const hoursEl = querySelectorSafe('#hours');
+  const minutesEl = querySelectorSafe('#minutes');
+  const secondsEl = querySelectorSafe('#seconds');
+
+  let countdownInterval;
+
+  const updateCountdown = () => {
+    const now = new Date().getTime();
+    const distance = weddingDate - now;
+
+    // Cálculos de tiempo
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    // Actualizar elementos
+    if (daysEl) daysEl.innerText = days.toString().padStart(3, '0');
+    if (hoursEl) hoursEl.innerText = hours.toString().padStart(2, '0');
+    if (minutesEl) minutesEl.innerText = minutes.toString().padStart(2, '0');
+    if (secondsEl) secondsEl.innerText = seconds.toString().padStart(2, '0');
+
+    // Si la fecha ya pasó
+    if (distance < 0) {
+      if (countdownInterval) clearInterval(countdownInterval);
+      if (daysEl) daysEl.innerText = '000';
+      if (hoursEl) hoursEl.innerText = '00';
+      if (minutesEl) minutesEl.innerText = '00';
+      if (secondsEl) secondsEl.innerText = '00';
+    }
+  };
+
+  // Ensure the script runs after the DOM is ready
+  // and elements exist before starting the interval.
+  const startCountdown = () => {
+    if (daysEl && hoursEl && minutesEl && secondsEl) {
+      updateCountdown(); // Initial update
+      countdownInterval = setInterval(updateCountdown, 1000);
+    } else {
+      // Optional: Retry or log error if elements aren't found immediately
+      // console.warn('Countdown elements not found yet, retrying...');
+      // setTimeout(startCountdown, 100); // Retry after 100ms
+    }
+  }
+
+  // Handle Astro's view transitions if applicable
+  document.addEventListener('astro:page-load', startCountdown);
+  // Run on initial load as well in case astro:page-load isn't needed
+  startCountdown();
+
+  // Clean up interval on page unload
+  document.addEventListener('astro:before-swap', () => {
+    if (countdownInterval) clearInterval(countdownInterval);
+  });
+</script> 

@@ -1,0 +1,278 @@
+---
+// Define FAQ categories and questions
+// NOTE: Update answers as needed, especially placeholders like [Fecha Límite]
+const faqCategories = [
+  {
+    category: "Sobre el Evento",
+    items: [
+      { 
+        question: "¿Cuándo y dónde es el casamiento?",
+        answer: "¡Nos casamos el <strong>Sábado 20 de diciembre de 2025</strong>! La celebración completa (ceremonia y fiesta) será en <strong>Lamadrid 54, Bella Vista, Buenos Aires</strong>." 
+      },
+      { 
+        question: "¿A qué hora empieza todo?",
+        answer: "La ceremonia comenzará puntualmente a las [Hora de inicio - Ejemplo: 16:00 hs]. ¡Recomendamos llegar unos minutos antes para acomodarse!" 
+      },
+       { 
+        question: "¿Cuál es el código de vestimenta?",
+        answer: "El código de vestimenta es <strong>Formal</strong>. ¡Vístete elegante pero cómodo/a para un día de verano! Recuerda que habrá pileta por si quieres traer traje de baño. Puedes ver más detalles en la sección 'Dress Code'." 
+      },
+      { 
+        question: "¿Habrá ceremonia religiosa?",
+        answer: "[Responder sí/no y dar detalles breves si aplica]" 
+      },
+    ]
+  },
+  {
+    category: "Sobre Niños",
+    items: [
+       { 
+        question: "¿Puedo llevar a mis hijos?",
+        answer: "Aunque adoramos a los niños, hemos decidido que la celebración sea <strong>sólo para adultos</strong>. Esperamos que puedan organizarse para acompañarnos y disfrutar de la fiesta. ¡Agradecemos mucho su comprensión!" 
+      },
+    ]
+  },
+  {
+    category: "Sobre Logística",
+    items: [
+      { 
+        question: "¿Cuándo debo confirmar mi asistencia?",
+        answer: "Te agradecemos enormemente que confirmes tu asistencia (¡y la de tus acompañantes!) antes del <strong>20 de noviembre de 2025</strong>. Puedes hacerlo a través del botón 'Confirmar Asistencia'." 
+      },
+       { 
+        question: "¿Cómo llego al lugar?",
+        answer: "En la sección 'Cómo Llegar' encontrarás indicaciones detalladas según tu punto de partida (CABA, Aeropuertos, otras provincias, España) y opciones de transporte como auto, taxi/apps." 
+      },
+       { 
+        question: "¿Habrá estacionamiento?",
+        answer: "Sí, habrá espacio para estacionar en la casa (limitado) y en las calles aledañas. También indicaremos opciones de parking cercano en la sección 'Cómo Llegar'." 
+      },
+       { 
+        question: "¿Qué pasa si tengo restricciones alimenticias?",
+        answer: "¡Muy importante! Por favor, indícanos cualquier alergia o restricción alimenticia al completar el formulario de confirmación de asistencia. Haremos todo lo posible para tener opciones adecuadas para ti." 
+      },
+      { 
+        question: "¿Puedo sacar fotos/videos durante la ceremonia?",
+        answer: "Preferiríamos que durante la ceremonia disfruten del momento junto a nosotros sin teléfonos ni cámaras. ¡Tendremos fotógrafos y videógrafos profesionales capturando todo! Durante la fiesta, ¡fotos y videos son bienvenidos!" 
+      },
+    ]
+  },
+   {
+    category: "Sobre Alojamiento",
+    items: [
+      { 
+        question: "¿Recomiendan algún lugar para alojarse?",
+        answer: "¡Sí! En la sección 'Alojamiento' hemos preparado un listado con opciones recomendadas en Bella Vista, San Miguel, y también consideramos la opción de alojarse en CABA o buscar en Airbnb. ¡Hay para todos los gustos y presupuestos!" 
+      },
+       { 
+        question: "¿Es mejor alojarse cerca o en Capital Federal?",
+        answer: "Depende de tus planes. Alojarte cerca (Bella Vista, San Miguel) es más cómodo para el día del casamiento. Alojarte en CABA te permite disfrutar más de la ciudad, pero implica un traslado de aprox. 1 hora hasta Bella Vista." 
+      },
+    ]
+  },
+   {
+    category: "Sobre Regalos",
+    items: [
+      { 
+        question: "¿Tienen lista de regalos?",
+        answer: "Lo más importante para nosotros es tu presencia. Como muchos viajan de lejos y vivimos en España, la logística de regalos físicos es complicada. Si deseas hacernos un regalo, en la sección 'Regalo' encontrarás los datos de nuestras cuentas bancarias en Argentina (ARS) y España (EUR)." 
+      },
+    ]
+  },
+   {
+    category: "Misceláneas",
+    items: [
+       { 
+        question: "¿Cuál es el hashtag del casamiento?",
+        answer: "¡Nos encantaría ver tus fotos! Usa el hashtag <strong>#[HashtagDelCasamiento]</strong> para compartir tus momentos en redes sociales." // Reemplazar con el hashtag real
+      },
+       { 
+        question: "¿Habrá guardarropa?",
+        answer: "[Responder sí/no y dar detalles breves si aplica]" 
+      },
+      { 
+        question: "¿A quién puedo contactar si tengo más preguntas?",
+        answer: "Si tu pregunta no está aquí, puedes escribirnos a <a href='mailto:memoypri@gmail.com' class='text-text-main hover:underline'>memoypri@gmail.com</a> o preguntarle a nuestro chatbot IA en esta página. ¡Intentaremos responder lo antes posible!" 
+      },
+    ]
+  },
+];
+---
+
+<section id="faq" class="section bg-white py-16">
+  <div class="container mx-auto px-4">
+    <h2 class="section-title">Preguntas Típicas</h2>
+    <p class="section-subtitle mb-10">Encuentra respuestas a tus dudas</p>
+    
+    <div class="max-w-4xl mx-auto">
+      <!-- Search Input -->
+      <div class="mb-8 relative">
+        <input 
+          type="text" 
+          id="faq-search" 
+          placeholder="Buscar preguntas..."
+          class="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-light focus:border-blue-light"
+        />
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-text-main" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- FAQ Accordion -->
+      <div id="faq-accordion" class="space-y-8">
+        {faqCategories.map(category => (
+          <div class="faq-category-group" data-category={category.category.toLowerCase()}>
+            <h3 class="text-xl font-semibold font-playfair text-text-main mb-4 border-b border-blue-light pb-2">{category.category}</h3>
+            <div class="space-y-4">
+              {category.items.map((faq, index) => (
+                <div class="faq-item bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden" data-question={faq.question.toLowerCase()} data-answer={faq.answer.toLowerCase()}>
+                  <button 
+                    class="faq-question w-full px-6 py-4 text-left flex justify-between items-center focus:outline-none transition-colors hover:bg-white"
+                    aria-expanded="false"
+                    aria-controls={`faq-answer-${category.category.replace(/\s+/g, '-')}-${index}`}
+                  >
+                    <span class="font-medium text-text-main">{faq.question}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="faq-icon h-5 w-5 text-text-main transform transition-transform duration-200 ease-in-out" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  <div 
+                    id={`faq-answer-${category.category.replace(/\s+/g, '-')}-${index}`}
+                    class="faq-answer px-6 pb-0 max-h-0 overflow-hidden transition-all duration-300 ease-in-out"
+                    aria-hidden="true"
+                  >
+                    <div class="border-t border-gray-200 pt-3 pb-4">
+                       <p class="text-text-main leading-relaxed"><Fragment set:html={faq.answer} /></p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      
+       <!-- No Results Message -->
+       <div id="faq-no-results" class="hidden mt-8 text-center text-text-main italic">
+          No se encontraron preguntas que coincidan con tu búsqueda.
+        </div>
+
+      <!-- Contact Footer -->
+      <div class="mt-16 text-center pt-10 border-t border-gray-200">
+        <h3 class="text-xl font-semibold text-text-main mb-4">¿Aún con dudas?</h3>
+        <p class="text-text-main mb-6">
+          Si no encontraste la respuesta que buscabas, ¡no te preocupes! Puedes:
+        </p>
+        <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+          <a href="mailto:memoypri@gmail.com" class="elegant-btn secondary flex items-center justify-center gap-2">
+             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+               <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+               <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+             </svg>
+            Enviar un Email
+          </a>
+          <button id="open-chatbot-faq" class="elegant-btn tertiary flex items-center justify-center gap-2">
+             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zm-4 0H9v2h2V9z" clip-rule="evenodd" />
+              </svg>
+            Preguntar al Chatbot
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const accordion = document.getElementById('faq-accordion');
+    const questions = accordion?.querySelectorAll('.faq-question');
+    const searchInput = document.getElementById('faq-search');
+    const allItems = accordion?.querySelectorAll('.faq-item');
+    const allCategoryGroups = accordion?.querySelectorAll('.faq-category-group');
+    const noResultsMessage = document.getElementById('faq-no-results');
+    const chatbotButton = document.getElementById('chatbot-button'); // Assuming your chatbot has an ID like this
+    const openChatbotFaqBtn = document.getElementById('open-chatbot-faq');
+
+    // Accordion Logic
+    questions?.forEach(question => {
+      question.addEventListener('click', () => {
+        const answer = question.nextElementSibling;
+        const icon = question.querySelector('.faq-icon');
+        const isExpanded = question.getAttribute('aria-expanded') === 'true';
+
+        // Close all others (optional, remove if multiple can be open)
+        questions.forEach(q => {
+           if (q !== question && q.getAttribute('aria-expanded') === 'true') {
+             const ans = q.nextElementSibling;
+             const icn = q.querySelector('.faq-icon');
+             q.setAttribute('aria-expanded', 'false');
+             ans.setAttribute('aria-hidden', 'true');
+             ans.style.maxHeight = '0px';
+             ans.classList.remove('pt-3', 'pb-4'); // Ensure padding is removed too
+             icn?.classList.remove('rotate-180');
+           }
+        });
+
+        // Toggle clicked one
+        if (isExpanded) {
+          question.setAttribute('aria-expanded', 'false');
+          answer.setAttribute('aria-hidden', 'true');
+          answer.style.maxHeight = '0px';
+          answer.classList.remove('pt-3', 'pb-4'); 
+          icon?.classList.remove('rotate-180');
+        } else {
+          question.setAttribute('aria-expanded', 'true');
+          answer.setAttribute('aria-hidden', 'false');
+          // Add padding *before* calculating scrollHeight for smooth transition
+          answer.classList.add('pt-3', 'pb-4'); 
+          answer.style.maxHeight = answer.scrollHeight + 'px'; 
+          icon?.classList.add('rotate-180');
+        }
+      });
+    });
+
+    // Search/Filter Logic
+    searchInput?.addEventListener('input', (e) => {
+      const searchTerm = e.target.value.toLowerCase().trim();
+      let hasVisibleItems = false;
+
+      allItems?.forEach(item => {
+        const questionText = item.getAttribute('data-question') || '';
+        const answerText = item.getAttribute('data-answer') || '';
+        const isMatch = questionText.includes(searchTerm) || answerText.includes(searchTerm);
+        
+        if (isMatch) {
+          item.style.display = '';
+          hasVisibleItems = true;
+        } else {
+          item.style.display = 'none';
+        }
+      });
+
+      // Hide/Show category titles if all items within are hidden
+      allCategoryGroups?.forEach(group => {
+         const visibleItems = group.querySelectorAll('.faq-item[style*="display: ;"], .faq-item:not([style*="display: none"])'); // Check visible items
+         if (visibleItems.length > 0) {
+           group.style.display = '';
+         } else {
+           group.style.display = 'none';
+         }
+      });
+      
+      // Show/Hide no results message
+      if (noResultsMessage) {
+          noResultsMessage.style.display = hasVisibleItems ? 'none' : 'block';
+      }
+
+    });
+    
+    // Open Chatbot Button
+     openChatbotFaqBtn?.addEventListener('click', () => {
+        chatbotButton?.click(); // Trigger click on the main chatbot button
+      });
+
+  });
+</script>

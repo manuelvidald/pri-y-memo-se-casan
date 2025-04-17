@@ -1,0 +1,161 @@
+---
+import QuickQuestions from './QuickQuestions.astro';
+---
+
+<div id="chatbot-window" class="hidden fixed bottom-20 right-6 w-80 sm:w-96 bg-white rounded-lg shadow-lg z-40 overflow-hidden max-h-[80vh] flex flex-col border border-blue-light font-ibm-plex">
+  <!-- Header -->
+  <div class="bg-white p-3 flex items-center justify-between text-black border-b border-gray-200">
+    <div class="flex items-center">
+      <div class="w-10 h-10 rounded-full overflow-hidden bg-white mr-3 flex items-center justify-center border border-gray-200">
+        <div class="w-full h-full bg-white flex items-center justify-center text-black font-script text-base">
+          M&P
+        </div>
+      </div>
+      <div>
+        <h4 class="font-semibold font-playfair text-lg">Memo & Pri</h4>
+        <p class="text-xs font-ibm-plex opacity-80">Asistente de casamiento</p>
+      </div>
+    </div>
+    <button id="chatbot-minimize" class="text-black hover:text-pink-medium transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
+  
+  <!-- Messages container -->
+  <div id="chat-messages" class="p-4 overflow-y-auto flex-1 flex flex-col space-y-4 font-ibm-plex">
+    <!-- Los mensajes se agregarán dinámicamente con JavaScript -->
+  </div>
+  
+  <!-- Quick questions -->
+  <QuickQuestions />
+  
+  <!-- Input area -->
+  <div class="border-t border-blue-light border-opacity-30 p-3 bg-white">
+    <form id="chat-form" class="flex">
+      <input 
+        type="text" 
+        id="user-message" 
+        placeholder="Escribe tu pregunta aquí..." 
+        class="flex-1 px-3 py-2 border border-blue-light rounded-l-md focus:outline-none focus:ring-2 focus:ring-pink-medium focus:border-transparent font-ibm-plex text-sm"
+      />
+      <button 
+        type="submit" 
+        class="bg-white border-2 border-pink-medium text-pink-medium px-4 py-2 rounded-r-md hover:bg-pink-medium hover:text-white transition-colors"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+        </svg>
+      </button>
+    </form>
+  </div>
+</div>
+
+<style>
+  /* Estilos para los mensajes */
+  #chat-messages {
+    min-height: 200px;
+    max-height: calc(80vh - 180px);
+  }
+  
+  /* Animación para los puntos de "escribiendo..." */
+  @keyframes typingAnimation {
+    0% { opacity: 0.3; }
+    50% { opacity: 1; }
+    100% { opacity: 0.3; }
+  }
+  
+  .typing-dots span {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    margin-right: 4px;
+    animation: typingAnimation 1s infinite;
+  }
+  
+  .typing-dots span:nth-child(1) {
+    animation-delay: 0s;
+  }
+  
+  .typing-dots span:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  
+  .typing-dots span:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+  
+  /* Estilos para los mensajes */
+  .message {
+    display: flex;
+    margin-bottom: 12px;
+    max-width: 85%;
+    font-size: 0.875rem;
+  }
+  
+  .user-message {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+    margin-left: auto;
+  }
+  
+  .bot-message {
+    align-self: flex-start;
+  }
+  
+  .message .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  
+  .user-message .avatar {
+    display: none;
+  }
+  
+  .bot-message .avatar {
+    margin-right: 8px;
+  }
+  
+  .message .content {
+    padding: 8px 12px;
+    border-radius: 18px;
+    max-width: 100%;
+    word-wrap: break-word;
+    line-height: 1.4;
+  }
+  
+  .user-message .content {
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #e0e0e0;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 18px;
+  }
+  
+  .bot-message .content {
+    background-color: #ffffff;
+    color: #1F2937;
+    border: 1px solid #f0f0f0;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 18px;
+  }
+  
+  .bot-message.typing .content {
+    background-color: transparent;
+    padding: 0;
+    margin-top: 8px;
+  }
+  
+  .error .content {
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #f8d7da;
+  }
+</style>

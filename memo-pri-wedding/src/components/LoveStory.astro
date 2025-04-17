@@ -1,0 +1,242 @@
+---
+// Props que se podrían pasar para personalizar
+---
+
+<section id="love-story" class="section bg-white overflow-hidden py-8 md:py-12 px-0 relative">
+  <img src="/images/flores_nuestra_historia.png" alt="Flower decoration" class="absolute top-0 left-0 w-20 h-auto z-20" />
+  
+  <div class="container mx-auto px-4">
+    <h2 class="section-title text-[#004AAD] font-lichtner">Nuestra Historia</h2>
+
+    <div class="max-w-3xl mx-auto text-center mb-16 px-8">
+      <p class="text-lg text-[#004AAD] leading-relaxed font-script">
+        Somos Pri y Memo.
+        Nos conocimos como no podía ser de otra forma: en una carrera de obstáculos.
+        Ella decía que su abuelo fue presidente de Patronato.
+        Él prometía que podía ahorrarle en la factura de luz… y que si lo lograba, le debía una birra.
+        Spoiler: hubo ahorro, y todavía le debe la birra.
+        <br><br>
+        Desde entonces, compartimos caminos, risas, viajes, naturaleza… y muchos sueños.
+        <br><br>
+        Un día, tomando mate en una playa de Fuerteventura, el último mate le tocó a Pri.
+        Y como dice la tradición en Argentina: el que toma el último mate, se casa.
+        Así, entre arena y viento, llegó la propuesta. Simple y auténtica, como nosotros.
+        <br><br>
+        Hoy queremos celebrar el amor con las personas que más queremos.
+        Nos llena de alegría saber que vienen desde distintos rincones de Argentina, de Barcelona (nuestra casa hoy), y de muchos otros lugares.
+        Gracias por estar. Por venir. Por compartir este momento con nosotros.
+      </p>
+    </div>
+  </div>
+  
+  <!-- Mirrored image moved here -->
+  
+  <div class="photo-carousel-container w-full relative">
+    <div id="carousel-viewport" class="relative w-full overflow-hidden">
+      <div id="carousel-items" class="flex transition-transform duration-500 ease-in-out h-full">
+        <!-- Slides will be injected here by JavaScript -->
+      </div>
+      <!-- Navigation Buttons -->
+      <button class="nav-button prev absolute top-1/2 left-1 transform -translate-y-1/2 p-3 z-10 focus:outline-none transition-opacity disabled:opacity-50 disabled:cursor-not-allowed">
+        <svg class="w-10 h-10 text-white hover:text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+      </button>
+      <button class="nav-button next absolute top-1/2 right-1 transform -translate-y-1/2 p-3 z-10 focus:outline-none transition-opacity disabled:opacity-50 disabled:cursor-not-allowed">
+        <svg class="w-10 h-10 text-white hover:text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+      </button>
+    </div>
+  </div>
+      
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const carouselContainer = document.getElementById('carousel-items');
+    const carouselViewport = document.getElementById('carousel-viewport');
+    const prevBtn = document.querySelector('.nav-button.prev');
+    const nextBtn = document.querySelector('.nav-button.next');
+    
+    if (!carouselContainer || !carouselViewport || !prevBtn || !nextBtn) {
+        console.error("Carousel elements not found!");
+        return;
+    }
+
+    const totalPlaceholders = 10; // Keep this or replace with actual image count later
+    let slidesVisible = 5; // Default for larger screens
+    let slideWidthPercentage = 100 / slidesVisible;
+    let slides = [];
+    let totalSlides = 0;
+    let currentIndex = 0;
+
+    // --- Touch related variables ---
+    let isDragging = false;
+    let startX = 0;
+    let currentTranslate = 0;
+    let prevTranslate = 0;
+    const swipeThreshold = 50; // Minimum pixels to swipe to change slide
+
+    function setupCarouselHeightAndSlides() {
+        const viewportWidth = carouselViewport.offsetWidth;
+        if (viewportWidth === 0) return;
+
+        // Determine slidesVisible based on viewport width
+        slidesVisible = window.innerWidth < 768 ? 3 : 5; // Use 768px as breakpoint (Tailwind md)
+        slideWidthPercentage = 100 / slidesVisible;
+
+        const slideWidthPx = viewportWidth / slidesVisible;
+        carouselViewport.style.height = `${slideWidthPx}px`; // Maintain aspect ratio
+
+        carouselContainer.innerHTML = ''; // Clear existing placeholders if any
+
+        // --- Load actual images ---
+        const imageBaseUrl = '/images/love-story/';
+        const imageNames = Array.from({ length: 10 }, (_, i) => `love_story_${i + 1}.jpeg`);
+
+        imageNames.forEach(imageName => {
+            const slide = document.createElement('div');
+            slide.classList.add(
+                'photo-carousel-slide',
+                'flex-shrink-0',
+                'h-full',
+                'box-border',
+                'overflow-hidden', // Ensure image stays within bounds
+                'select-none' // Prevent text selection during drag
+            );
+            slide.style.width = `${slideWidthPercentage}%`;
+
+            const img = document.createElement('img');
+            img.src = `${imageBaseUrl}${imageName}`;
+            img.alt = 'Photo from our story'; // Add alt text for accessibility
+            img.classList.add(
+                'w-full',       // Make image fill the slide width
+                'h-full',       // Make image fill the slide height
+                'object-cover', // Cover the area, cropping if necessary
+                'aspect-square',// Maintain square aspect ratio (redundant with h-full w-full on square container, but safe)
+                'filter',       // Enable filter utility
+                'grayscale'     // Apply grayscale filter
+            );
+            img.loading = 'lazy'; // Improve initial page load
+            // Prevent dragging images causing issues
+            img.ondragstart = () => false; 
+
+            slide.appendChild(img);
+            carouselContainer.appendChild(slide);
+        });
+        // --- End image loading ---
+
+        // Recalculate state after setup
+        slides = carouselContainer.querySelectorAll('.photo-carousel-slide');
+        totalSlides = slides.length;
+        // Ensure currentIndex is valid after resize
+        const maxIndex = Math.max(0, totalSlides - slidesVisible);
+        currentIndex = Math.min(currentIndex, maxIndex); 
+        
+        updateCarouselState(false); // Update without animation initially
+    }
+
+    function updateCarouselState(animate = true) {
+        if (totalSlides === 0) return; // Check if slides exist
+
+        const maxIndex = Math.max(0, totalSlides - slidesVisible);
+        currentIndex = Math.max(0, Math.min(currentIndex, maxIndex));
+        
+        currentTranslate = -currentIndex * (carouselViewport.offsetWidth / slidesVisible);
+
+        if (animate) {
+            carouselContainer.style.transition = 'transform 0.5s ease-in-out';
+        } else {
+            carouselContainer.style.transition = 'none'; // Disable animation for instant updates
+        }
+        
+        carouselContainer.style.transform = `translateX(${currentTranslate}px)`;
+        
+        // Update button states
+        prevBtn.disabled = currentIndex === 0;
+        nextBtn.disabled = currentIndex >= maxIndex; 
+
+        // Allow animation for subsequent updates
+        if (!animate) {
+           // Force reflow to apply non-animated state before re-enabling animation
+           carouselContainer.offsetHeight; 
+           carouselContainer.style.transition = 'transform 0.5s ease-in-out';
+        }
+    }
+    
+    setupCarouselHeightAndSlides(); // Initial setup
+    
+    // --- Button Event Listeners ---
+    prevBtn.addEventListener('click', () => {
+      currentIndex = Math.max(currentIndex - 1, 0);
+      updateCarouselState();
+    });
+    
+    nextBtn.addEventListener('click', () => {
+      const maxIndex = Math.max(0, totalSlides - slidesVisible);
+      currentIndex = Math.min(currentIndex + 1, maxIndex);
+      updateCarouselState();
+    });
+
+    // --- Touch Event Listeners ---
+    carouselViewport.addEventListener('touchstart', (e) => {
+        isDragging = true;
+        startX = e.touches[0].clientX;
+        // Get the current transform value (numeric part)
+        const transformMatrix = window.getComputedStyle(carouselContainer).getPropertyValue('transform');
+        if (transformMatrix !== 'none') {
+            prevTranslate = parseInt(transformMatrix.split(',')[4] || 0);
+        } else {
+            prevTranslate = 0;
+        }
+        carouselContainer.style.transition = 'none'; // Disable animation while dragging
+        carouselViewport.style.cursor = 'grabbing';
+    }, { passive: true }); // Use passive for potentially better scroll performance
+
+    carouselViewport.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        const currentX = e.touches[0].clientX;
+        const deltaX = currentX - startX;
+        currentTranslate = prevTranslate + deltaX;
+        // Apply immediate transform for visual feedback
+        carouselContainer.style.transform = `translateX(${currentTranslate}px)`;
+    });
+
+    carouselViewport.addEventListener('touchend', () => {
+        if (!isDragging) return;
+        isDragging = false;
+        carouselContainer.style.transition = 'transform 0.5s ease-in-out'; // Re-enable animation
+        carouselViewport.style.cursor = 'grab';
+
+        const movedBy = currentTranslate - prevTranslate;
+        const maxIndex = Math.max(0, totalSlides - slidesVisible);
+
+        // Check if swipe distance is significant and update index
+        if (Math.abs(movedBy) > swipeThreshold) {
+            if (movedBy < 0) { // Swiped left
+                currentIndex = Math.min(currentIndex + 1, maxIndex);
+            } else { // Swiped right
+                currentIndex = Math.max(currentIndex - 1, 0);
+            }
+        }
+        // Snap to the determined index (either new or original)
+        updateCarouselState(); 
+    });
+
+    carouselViewport.addEventListener('touchcancel', () => {
+        if (!isDragging) return;
+        isDragging = false;
+        carouselContainer.style.transition = 'transform 0.5s ease-in-out';
+        carouselViewport.style.cursor = 'grab';
+        updateCarouselState(); // Snap back if touch is cancelled
+    });
+
+    // --- Resize Listener ---
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            // Recalculate everything on resize
+            setupCarouselHeightAndSlides(); 
+        }, 250);
+    });
+
+  });
+</script>
