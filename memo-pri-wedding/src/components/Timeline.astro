@@ -38,7 +38,14 @@ const weddingTimeline = [
           <div class="flex flex-col items-center text-center"> {/* Centered column for each item */}
             {/* Icon */}
             <div class="mb-2">
-               <img src={item.icon} alt={`${item.title} Icon`} class="h-20 w-20 object-contain mx-auto" /> {/* Increased size */}
+               <img 
+                 src={item.icon} 
+                 alt={`${item.title} Icon`} 
+                 class:list={[
+                   "object-contain mx-auto",
+                   item.title === 'Fiesta' ? 'h-24 w-24' : 'h-20 w-20' // Conditional size for Fiesta
+                 ]} 
+               />
             </div>
             {/* Content */}
             <div class="mt-1">
@@ -55,12 +62,19 @@ const weddingTimeline = [
       {/* Removed Horizontal connecting line */}
 
       {/* Use flex grid for centering and spacing */}
-      <div class="flex justify-center items-start space-x-8 lg:space-x-16"> {/* Centered row, adjust spacing */}
+      <div class="flex justify-center items-baseline space-x-8 lg:space-x-16"> {/* Changed items-start to items-baseline */}
         {weddingTimeline.map((item, index) => (
           <div class="timeline-point flex-shrink-0 w-32 flex flex-col items-center text-center">
             {/* Icon */}
             <div class="mb-2">
-                 <img src={item.icon} alt={`${item.title} Icon`} class="h-16 w-16 object-contain mx-auto" /> {/* Increased size */}
+                 <img 
+                   src={item.icon} 
+                   alt={`${item.title} Icon`} 
+                   class:list={[
+                     "object-contain mx-auto",
+                     item.title === 'Fiesta' ? 'h-20 w-20' : 'h-16 w-16' // Conditional size for Fiesta
+                   ]} 
+                 />
             </div>
             {/* Content */}
             <p class="text-md text-white mt-2 unified-text">{item.time}</p> {/* Changed text color + added unified-text */}
