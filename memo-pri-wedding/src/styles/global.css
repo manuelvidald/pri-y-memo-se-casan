@@ -73,7 +73,7 @@
   }
   
   .section-title {
-    @apply text-2xl md:text-3xl font-lichtner text-center mb-10 text-[#004AAD] uppercase tracking-widest;
+    @apply text-4xl md:text-5xl font-lichtner text-center mb-10 text-[#004AAD] uppercase tracking-widest;
   }
 
   .section-subtitle {

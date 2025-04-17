@@ -5,29 +5,29 @@ const weddingTimeline = [
   {
     title: "CEREMONIA",
     time: "12:00 Hs",
-    icon: "/images/icon-anillos.png"
+    icon: "/images/icon-anillos-white.png"
   },
   {
     title: "BRINDIS",
     time: "14:00 Hs",
-    icon: "/images/icon-brindis.png" // Corrected filename from user prompt
+    icon: "/images/icon-brindis-white.png" // Corrected filename from user prompt
   },
   {
     title: "COMIDA",
     time: "14:30 Hs",
-    icon: "/images/icon-comida.png"
+    icon: "/images/icon-comida-white.png"
   },
   {
     title: "FIESTA",
     time: "16:00 Hs",
-    icon: "/images/icon-fiesta.png"
+    icon: "/images/icon-fiesta-white.png"
   }
 ];
 ---
 
-<section id="timeline" class="section bg-white py-12 md:py-16"> {/* Removed global font */}
+<section id="timeline" class="section py-12 md:py-16" style="background-color: #004AAD;"> {/* Removed global font, added background color style */}
   <div class="container mx-auto px-4">
-    <h2 class="section-title text-blue-dark">TIMELINE</h2>
+    <h2 class="section-title text-white">TIMELINE</h2> {/* Changed text color */}
 
     {/* Mobile View: Vertical Timeline - Centered */}
     <div class="relative md:hidden mt-12 max-w-xs mx-auto">
@@ -41,9 +41,9 @@ const weddingTimeline = [
                <img src={item.icon} alt={`${item.title} Icon`} class="h-16 w-16 object-contain mx-auto" /> {/* Increased size */}
             </div>
             {/* Content */}
-            <div class="mt-1"> 
-              <p class="text-md text-blue-dark">{item.time}</p>
-              <p class="text-md text-blue-dark mt-1 uppercase tracking-wider">{item.title}</p>
+            <div class="mt-1">
+              <p class="text-md text-white">{item.time}</p> {/* Changed text color */}
+              <p class="text-md text-white mt-1 uppercase tracking-wider">{item.title}</p> {/* Changed text color */}
             </div>
           </div>
         ))}
@@ -57,14 +57,14 @@ const weddingTimeline = [
       {/* Use flex grid for centering and spacing */}
       <div class="flex justify-center items-start space-x-8 lg:space-x-16"> {/* Centered row, adjust spacing */}
         {weddingTimeline.map((item, index) => (
-          <div class="timeline-point flex-shrink-0 w-32 flex flex-col items-center text-center"> 
+          <div class="timeline-point flex-shrink-0 w-32 flex flex-col items-center text-center">
             {/* Icon */}
             <div class="mb-2">
                  <img src={item.icon} alt={`${item.title} Icon`} class="h-16 w-16 object-contain mx-auto" /> {/* Increased size */}
             </div>
             {/* Content */}
-            <p class="text-md text-blue-dark mt-2">{item.time}</p>
-            <p class="text-md text-blue-dark mt-1 uppercase tracking-wider">{item.title}</p>
+            <p class="text-md text-white mt-2">{item.time}</p> {/* Changed text color */}
+            <p class="text-md text-white mt-1 uppercase tracking-wider">{item.title}</p> {/* Changed text color */}
           </div>
         ))}
       </div>
