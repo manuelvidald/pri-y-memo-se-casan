@@ -32,15 +32,29 @@
   </div>
   
   <!-- Swiper Carousel -->
-  <div class="photo-carousel-container w-full relative">
+  <div class="photo-carousel-container w-full relative px-4">
+    <!-- Navigation Buttons -->
+    <div class="flex justify-end space-x-2 mb-2 relative z-10">
+      <div class="swiper-button-prev love-story-swiper-prev p-1 cursor-pointer"> 
+        <svg class="w-6 h-6 text-[#004AAD]" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+      </div>
+      <div class="swiper-button-next love-story-swiper-next p-1 cursor-pointer">
+        <svg class="w-6 h-6 text-[#004AAD]" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </div>
+    </div>
+
     <!-- Slider main container -->
     <div class="swiper love-story-swiper overflow-hidden">
       <!-- Additional required wrapper -->
       <div class="swiper-wrapper">
         <!-- Slides are dynamically generated in script -->
       </div>
-      <!-- Pagination -->
-      <div class="swiper-pagination"></div>
     </div>
   </div>
       
@@ -51,7 +65,7 @@
 <script>
   // Import Swiper bundle and its CSS
   import Swiper from 'swiper/bundle'; 
-  import 'swiper/css/bundle'; // Includes core, pagination, etc.
+  import 'swiper/css/bundle'; // Includes core, pagination, navigation etc.
   // Removed previous separate CSS imports
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -68,18 +82,16 @@
     imageNames.forEach(imageName => {
       const slide = document.createElement('div');
       slide.classList.add('swiper-slide');
-
       const img = document.createElement('img');
       img.src = `${imageBaseUrl}${imageName}`;
       img.alt = 'Photo from our story';
       img.loading = 'lazy';
       img.classList.add('w-full', 'h-full', 'object-cover');
-
       slide.appendChild(img);
       swiperWrapper.appendChild(slide);
     });
 
-    // Initialize Swiper (configuration remains the same)
+    // Initialize Swiper
     const swiper = new Swiper('.love-story-swiper', {
       direction: 'horizontal',
       loop: false,
@@ -92,9 +104,9 @@
         momentumRatio: 1.0,
         momentumVelocityRatio: 1.0,
       },
-      pagination: {
-        el: '.swiper-pagination',
-        clickable: true,
+      navigation: {
+        nextEl: '.love-story-swiper-next',
+        prevEl: '.love-story-swiper-prev',
       },
       grabCursor: true,
       watchSlidesProgress: false,
@@ -102,9 +114,6 @@
       observeParents: true,
       a11y: {
         enabled: true,
-        prevSlideMessage: 'Previous slide',
-        nextSlideMessage: 'Next slide',
-        paginationBulletMessage: 'Go to slide {{index}}',
       },
     });
 
@@ -115,7 +124,6 @@
   /* Styles are now global */
   .love-story-swiper {
     width: 100%;
-    padding-bottom: 30px; /* Add padding at the bottom to avoid overlap with pagination */
   }
 
   .swiper-wrapper {
@@ -123,20 +131,18 @@
   }
 
   .swiper-slide {
-    /* --- Mobile First --- */
-    width: 80%; /* Show ~1.2 slides */
-    aspect-ratio: 1 / 1 !important; /* Maintain square shape - Added !important */
-    filter: grayscale(1) !important; /* Apply grayscale filter - Added !important */
+    width: 80%; 
+    aspect-ratio: 1 / 1 !important;
+    filter: grayscale(1) !important;
     overflow: hidden; 
     box-sizing: border-box;
     flex-shrink: 0; 
   }
 
   /* --- Desktop --- */
-  @media (min-width: 768px) { /* Tailwind 'md' breakpoint */
+  @media (min-width: 768px) { 
     .swiper-slide {
-      width: 20%; /* Show 5 slides */
-      /* aspect-ratio and filter inherit from mobile first */
+      width: 20%; 
     }
   }
 
@@ -147,28 +153,17 @@
     object-fit: cover;
   }
 
-  /* --- Pagination Dots Styling --- */
-  .swiper-pagination {
-    position: absolute; 
-    bottom: 5px; 
-    left: 0; 
-    width: 100%; 
-    text-align: center;
+  /* --- Navigation Arrows Custom Styling --- */
+  .love-story-swiper-prev,
+  .love-story-swiper-next {
+    position: static; 
+    color: #004AAD;
+    transition: opacity 0.3s;
   }
 
-  .swiper-pagination-bullet {
-    width: 8px;
-    height: 8px;
-    background-color: #ccc; 
-    opacity: 0.5;
-    border-radius: 50%;
-    display: inline-block;
-    margin: 0 4px;
-    transition: background-color 0.3s, opacity 0.3s;
-  }
-
-  .swiper-pagination-bullet-active {
-    background-color: #004AAD; 
-    opacity: 1;
+  .swiper-button-disabled {
+    opacity: 0.35;
+    cursor: auto;
+    pointer-events: none;
   }
 </style>

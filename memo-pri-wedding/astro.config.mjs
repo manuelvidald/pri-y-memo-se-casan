@@ -5,4 +5,9 @@ import icon from 'astro-icon';
 export default defineConfig({
   integrations: [tailwind(), icon()],
   output: 'static',
+  vite: {
+    ssr: {
+      noExternal: ['swiper'],
+    }
+  }
 });
