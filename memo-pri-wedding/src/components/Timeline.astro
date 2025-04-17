@@ -3,22 +3,22 @@ import { Icon } from 'astro-icon/components';
 
 const weddingTimeline = [
   {
-    title: "CEREMONIA",
+    title: "Ceremonia",
     time: "12:00 Hs",
     icon: "/images/icon-anillos-white.png"
   },
   {
-    title: "BRINDIS",
+    title: "Brindis",
     time: "14:00 Hs",
     icon: "/images/icon-brindis-white.png" // Corrected filename from user prompt
   },
   {
-    title: "COMIDA",
+    title: "Comida",
     time: "14:30 Hs",
     icon: "/images/icon-comida-white.png"
   },
   {
-    title: "FIESTA",
+    title: "Fiesta",
     time: "16:00 Hs",
     icon: "/images/icon-fiesta-white.png"
   }
@@ -43,7 +43,7 @@ const weddingTimeline = [
             {/* Content */}
             <div class="mt-1">
               <p class="text-md text-white">{item.time}</p> {/* Changed text color */}
-              <p class="text-md text-white mt-1 uppercase tracking-wider">{item.title}</p> {/* Changed text color */}
+              <p class="text-md text-white mt-1 tracking-wider">{item.title}</p> {/* Removed uppercase class */}
             </div>
           </div>
         ))}
@@ -64,7 +64,7 @@ const weddingTimeline = [
             </div>
             {/* Content */}
             <p class="text-md text-white mt-2">{item.time}</p> {/* Changed text color */}
-            <p class="text-md text-white mt-1 uppercase tracking-wider">{item.title}</p> {/* Changed text color */}
+            <p class="text-md text-white mt-1 tracking-wider">{item.title}</p> {/* Removed uppercase class */}
           </div>
         ))}
       </div>
@@ -75,4 +75,8 @@ const weddingTimeline = [
 <style>
   /* Optional: Add specific styles if Tailwind isn't enough */
   /* Ensure the container has enough height in vertical mode if needed */
+  #timeline p { /* Target all p tags within the timeline section for font styling */
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 300;
+  }
 </style>
