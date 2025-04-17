@@ -31,20 +31,18 @@
     </div>
   </div>
   
-  <!-- Swiper Carousel -->
-  <div class="photo-carousel-container w-full relative px-4">
+  <!-- Swiper Carousel Section -->
+  <div class="photo-carousel-container w-full relative">
     <!-- Navigation Buttons -->
-    <div class="flex justify-end space-x-2 mb-2 relative z-10">
-      <div class="swiper-button-prev love-story-swiper-prev p-1 cursor-pointer"> 
-        <svg class="w-6 h-6 text-[#004AAD]" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-          <line x1="19" y1="12" x2="5" y2="12"></line>
-          <polyline points="12 19 5 12 12 5"></polyline>
+    <div class="flex justify-end space-x-2 mb-2 relative z-10 px-4">
+      <div class="swiper-button-prev love-story-swiper-prev cursor-pointer">
+        <svg class="w-5 h-5 text-[#004AAD]" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <path d="M15 18l-6-6 6-6"/>
         </svg>
       </div>
-      <div class="swiper-button-next love-story-swiper-next p-1 cursor-pointer">
-        <svg class="w-6 h-6 text-[#004AAD]" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-          <polyline points="12 5 19 12 12 19"></polyline>
+      <div class="swiper-button-next love-story-swiper-next cursor-pointer">
+        <svg class="w-5 h-5 text-[#004AAD]" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <path d="M9 18l6-6-6-6"/>
         </svg>
       </div>
     </div>
@@ -66,7 +64,6 @@
   // Import Swiper bundle and its CSS
   import Swiper from 'swiper/bundle'; 
   import 'swiper/css/bundle'; // Includes core, pagination, navigation etc.
-  // Removed previous separate CSS imports
 
   document.addEventListener('DOMContentLoaded', () => {
     const imageNames = Array.from({ length: 10 }, (_, i) => `love_story_${i + 1}.jpeg`);
@@ -78,7 +75,6 @@
       return;
     }
 
-    // Generate slides dynamically
     imageNames.forEach(imageName => {
       const slide = document.createElement('div');
       slide.classList.add('swiper-slide');
@@ -101,8 +97,8 @@
         enabled: true,
         sticky: false,
         momentumBounce: true,
-        momentumRatio: 1.0,
-        momentumVelocityRatio: 1.0,
+        momentumRatio: 0.7,
+        momentumVelocityRatio: 0.7,
       },
       navigation: {
         nextEl: '.love-story-swiper-next',
@@ -159,6 +155,10 @@
     position: static; 
     color: #004AAD;
     transition: opacity 0.3s;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .swiper-button-disabled {
