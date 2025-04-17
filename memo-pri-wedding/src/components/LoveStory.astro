@@ -131,7 +131,7 @@
   .swiper-slide {
     width: 80%; 
     aspect-ratio: 1 / 1 !important;
-    filter: grayscale(1) !important;
+    filter: grayscale(1);
     overflow: hidden; 
     box-sizing: border-box;
     flex-shrink: 0; 
@@ -140,7 +140,8 @@
   /* --- Desktop --- */
   @media (min-width: 768px) { 
     .swiper-slide {
-      width: 20%; 
+      width: 20% !important;
+      aspect-ratio: 1 / 1 !important;
     }
   }
 
