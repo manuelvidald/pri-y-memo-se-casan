@@ -113,3 +113,9 @@
     @apply uppercase text-xs tracking-widest border border-invitation-blue text-text-main px-6 py-3 hover:bg-invitation-blue hover:text-white transition-colors duration-300 focus:outline-none focus:ring-0;
   }
 }
+
+.unified-text {
+  font-family: 'IBM Plex Sans', sans-serif; /* Updated font */
+  font-size: 1rem; /* You can still adjust this size if needed */
+  font-weight: 300; /* Added light weight */
+}

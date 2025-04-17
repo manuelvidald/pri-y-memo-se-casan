@@ -42,8 +42,8 @@ const weddingTimeline = [
             </div>
             {/* Content */}
             <div class="mt-1">
-              <p class="text-md text-white">{item.time}</p> {/* Changed text color */}
-              <p class="text-md text-white mt-1 tracking-wider">{item.title}</p> {/* Removed uppercase class */}
+              <p class="text-md text-white unified-text">{item.time}</p> {/* Changed text color + added unified-text */}
+              <p class="text-md text-white mt-1 tracking-wider unified-text">{item.title}</p> {/* Removed uppercase class + added unified-text */}
             </div>
           </div>
         ))}
@@ -63,20 +63,11 @@ const weddingTimeline = [
                  <img src={item.icon} alt={`${item.title} Icon`} class="h-16 w-16 object-contain mx-auto" /> {/* Increased size */}
             </div>
             {/* Content */}
-            <p class="text-md text-white mt-2">{item.time}</p> {/* Changed text color */}
-            <p class="text-md text-white mt-1 tracking-wider">{item.title}</p> {/* Removed uppercase class */}
+            <p class="text-md text-white mt-2 unified-text">{item.time}</p> {/* Changed text color + added unified-text */}
+            <p class="text-md text-white mt-1 tracking-wider unified-text">{item.title}</p> {/* Removed uppercase class + added unified-text */}
           </div>
         ))}
       </div>
     </div>
   </div>
 </section>
-
-<style>
-  /* Optional: Add specific styles if Tailwind isn't enough */
-  /* Ensure the container has enough height in vertical mode if needed */
-  #timeline p { /* Target all p tags within the timeline section for font styling */
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-weight: 300;
-  }
-</style>
