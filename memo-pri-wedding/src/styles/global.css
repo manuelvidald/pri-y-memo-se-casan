@@ -46,7 +46,7 @@
 
 @layer components {
   .btn {
-    @apply px-6 py-3 border border-invitation-blue bg-transparent rounded-none transition-colors duration-300 font-medium text-center inline-block text-text-main hover:bg-invitation-blue hover:text-white;
+    @apply px-6 py-3 border border-invitation-blue bg-transparent rounded-none transition-colors duration-300 font-medium text-center inline-block text-text-main hover:bg-invitation-blue hover:text-white focus:outline-none focus:ring-0;
   }
   
   .btn-primary {
@@ -102,6 +102,6 @@
   }
   
   .elegant-btn {
-    @apply uppercase text-xs tracking-widest border border-invitation-blue text-text-main px-6 py-3 hover:bg-invitation-blue hover:text-white transition-colors duration-300;
+    @apply uppercase text-xs tracking-widest border border-invitation-blue text-text-main px-6 py-3 hover:bg-invitation-blue hover:text-white transition-colors duration-300 focus:outline-none focus:ring-0;
   }
 }
