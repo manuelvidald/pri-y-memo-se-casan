@@ -3,7 +3,7 @@
 ---
 
 <section id="love-story" class="section bg-white overflow-hidden py-8 md:py-12 px-0 relative">
-  <img src="/images/flores_nuestra_historia.png" alt="Flower decoration" class="absolute top-0 left-0 w-20 h-auto z-20" />
+  <img src="/images/flores_nuestra_historia.png" alt="Flower decoration" class="absolute top-0 left-0 w-20 md:w-40 h-auto z-20" />
   
   <div class="container mx-auto px-4">
     <h2 class="section-title text-[#004AAD] font-lichtner">Nuestra Historia</h2>
@@ -79,7 +79,7 @@
         if (viewportWidth === 0) return;
 
         // Determine slidesVisible based on viewport width
-        slidesVisible = window.innerWidth < 768 ? 3 : 5; // Use 768px as breakpoint (Tailwind md)
+        slidesVisible = window.innerWidth < 768 ? 2 : 5; // Use 768px as breakpoint (Tailwind md)
         slideWidthPercentage = 100 / slidesVisible;
 
         const slideWidthPx = viewportWidth / slidesVisible;
@@ -207,16 +207,20 @@
 
         const movedBy = currentTranslate - prevTranslate;
         const maxIndex = Math.max(0, totalSlides - slidesVisible);
+        const slideWidthPx = carouselViewport.offsetWidth / slidesVisible;
 
-        // Check if swipe distance is significant and update index
-        if (Math.abs(movedBy) > swipeThreshold) {
-            if (movedBy < 0) { // Swiped left
-                currentIndex = Math.min(currentIndex + 1, maxIndex);
-            } else { // Swiped right
-                currentIndex = Math.max(currentIndex - 1, 0);
-            }
-        }
-        // Snap to the determined index (either new or original)
+        // --- Modified Snap Logic ---
+        // Calculate the ideal index based on the final drag position
+        let targetIndex = Math.round(-currentTranslate / slideWidthPx);
+
+        // Clamp the index within valid bounds
+        targetIndex = Math.max(0, Math.min(targetIndex, maxIndex));
+
+        // Set the current index to the calculated target
+        currentIndex = targetIndex;
+        // --- End Modified Snap Logic ---
+
+        // Snap to the determined index
         updateCarouselState(); 
     });
 
