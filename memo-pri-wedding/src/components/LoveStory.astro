@@ -2,6 +2,8 @@
 // Props que se podrían pasar para personalizar
 ---
 
+<!-- Swiper CSS is now imported in the script -->
+
 <section id="love-story" class="section bg-white overflow-hidden py-8 md:py-12 px-0 relative">
   <img src="/images/flores_nuestra_historia.png" alt="Flower decoration" class="absolute top-0 left-0 w-20 md:w-40 h-auto z-20" />
   
@@ -29,337 +31,146 @@
     </div>
   </div>
   
-  <!-- Mirrored image moved here -->
-  
+  <!-- Swiper Carousel -->
   <div class="photo-carousel-container w-full relative">
-    <!-- Navigation Buttons Container - Moved Above Viewport -->
-    <div class="flex justify-end space-x-2 mb-2 px-4">
-      <button class="nav-button prev p-1 focus:outline-none transition-opacity disabled:opacity-40 disabled:cursor-not-allowed">
-        <svg class="w-6 h-6 text-[#004AAD] hover:opacity-75 transition-opacity" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-          <line x1="19" y1="12" x2="5" y2="12"></line>
-          <polyline points="12 19 5 12 12 5"></polyline>
-        </svg>
-      </button>
-      <button class="nav-button next p-1 focus:outline-none transition-opacity disabled:opacity-40 disabled:cursor-not-allowed">
-        <svg class="w-6 h-6 text-[#004AAD] hover:opacity-75 transition-opacity" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-          <polyline points="12 5 19 12 12 19"></polyline>
-        </svg>
-      </button>
-    </div>
-
-    <div id="carousel-viewport" class="relative w-full overflow-hidden">
-      <div id="carousel-items" class="flex h-full">
-        <!-- Slides will be injected here by JavaScript -->
+    <!-- Slider main container -->
+    <div class="swiper love-story-swiper overflow-hidden">
+      <!-- Additional required wrapper -->
+      <div class="swiper-wrapper">
+        <!-- Slides are dynamically generated in script -->
       </div>
+      <!-- Pagination -->
+      <div class="swiper-pagination"></div>
     </div>
   </div>
       
 </section>
 
+<!-- Swiper JS is now imported in the script -->
+
 <script>
+  // Import Swiper and its modules/styles
+  import Swiper from 'swiper';
+  import 'swiper/css'; // Core Swiper styles
+  import 'swiper/css/pagination'; // Pagination styles
+  // If using other modules like Navigation, FreeMode, etc., import their CSS too if needed.
+  // For FreeMode with momentum, core CSS is usually sufficient.
+
   document.addEventListener('DOMContentLoaded', () => {
-    const carouselContainer = document.getElementById('carousel-items');
-    const carouselViewport = document.getElementById('carousel-viewport');
-    const prevBtn = document.querySelector('.nav-button.prev');
-    const nextBtn = document.querySelector('.nav-button.next');
-    
-    if (!carouselContainer || !carouselViewport || !prevBtn || !nextBtn) {
-        console.error("Carousel elements not found!");
-        return;
+    const imageNames = Array.from({ length: 10 }, (_, i) => `love_story_${i + 1}.jpeg`);
+    const imageBaseUrl = '/images/love-story/';
+    const swiperWrapper = document.querySelector('.love-story-swiper .swiper-wrapper');
+
+    if (!swiperWrapper) {
+      console.error("Swiper wrapper not found!");
+      return;
     }
 
-    const mobileBreakpoint = 768;
-    const slidesToDisplayDesktop = 5;
-    const slidesToDisplayMobilePartial = 1.2; // Show 1 full and part of the next
+    // Generate slides dynamically
+    imageNames.forEach(imageName => {
+      const slide = document.createElement('div');
+      slide.classList.add('swiper-slide');
 
-    let slideWidthPercentage = 100 / slidesToDisplayDesktop; // Default desktop
-    let slides = [];
-    let totalSlides = 0;
-    let currentIndex = 0;
-    let maxIndex = 0; 
-    let slideWidthPx = 0; 
-    let viewportWidth = 0; // Store viewport width
-    let maxNegativeTranslate = 0; // Max scroll position
+      const img = document.createElement('img');
+      img.src = `${imageBaseUrl}${imageName}`;
+      img.alt = 'Photo from our story';
+      img.loading = 'lazy';
+      img.classList.add('w-full', 'h-full', 'object-cover');
 
-    // --- Touch/Inertia related variables ---
-    let isDragging = false;
-    let startX = 0;
-    let currentTranslate = 0;
-    let prevTranslate = 0;
-    // For velocity calculation
-    let lastMoveX = 0;
-    let lastMoveTime = 0;
-    let velocity = 0;
-    // For inertia animation
-    let animationFrameId = null;
-    const friction = 0.95; // Closer to 1 = less friction, longer scroll
-    const minVelocity = 0.5; // Velocity threshold to stop animation
-    // const swipeThreshold = 30; // No longer needed for snap logic
-
-    function setupCarouselHeightAndSlides() {
-        viewportWidth = carouselViewport.offsetWidth; // Store viewport width
-        if (viewportWidth === 0) return;
-
-        const isMobile = window.innerWidth < mobileBreakpoint;
-        
-        slideWidthPercentage = isMobile 
-            ? (100 / slidesToDisplayMobilePartial) 
-            : (100 / slidesToDisplayDesktop);
-        
-        slideWidthPx = viewportWidth * (slideWidthPercentage / 100);
-        
-        carouselViewport.style.height = `${slideWidthPx}px`; // Maintain square aspect ratio based on new width
-        carouselViewport.style.overscrollBehavior = 'contain'; // Prevent bounce effect
-
-        carouselContainer.innerHTML = ''; // Clear existing placeholders if any
-
-        // --- Load actual images ---
-        const imageBaseUrl = '/images/love-story/';
-        const imageNames = Array.from({ length: 10 }, (_, i) => `love_story_${i + 1}.jpeg`);
-
-        imageNames.forEach(imageName => {
-            const slide = document.createElement('div');
-            slide.classList.add(
-                'photo-carousel-slide',
-                'flex-shrink-0',
-                'h-full',
-                'box-border',
-                'overflow-hidden', // Ensure image stays within bounds
-                'select-none' // Prevent text selection during drag
-            );
-            // Apply width using px for precision needed with partial visibility
-            slide.style.width = `${slideWidthPx}px`; 
-
-            const img = document.createElement('img');
-            img.src = `${imageBaseUrl}${imageName}`;
-            img.alt = 'Photo from our story';
-            img.classList.add(
-                'w-full', 'h-full', 'object-cover', 'aspect-square',
-                'filter', 'grayscale'
-            );
-            img.loading = 'lazy';
-            img.ondragstart = () => false; 
-
-            slide.appendChild(img);
-            carouselContainer.appendChild(slide);
-        });
-        // --- End image loading ---
-
-        slides = carouselContainer.querySelectorAll('.photo-carousel-slide');
-        totalSlides = slides.length;
-        
-        // Max index allows scrolling until the start of the last slide is aligned with the start of the viewport
-        maxIndex = totalSlides > 0 ? totalSlides - 1 : 0;
-        
-        // Calculate max scroll position: allows scrolling until end of last slide aligns with end of viewport
-        const totalCarouselWidth = totalSlides * slideWidthPx;
-        maxNegativeTranslate = totalCarouselWidth > viewportWidth ? -(totalCarouselWidth - viewportWidth) : 0;
-
-        // Ensure currentIndex is valid after setup/resize
-        currentIndex = Math.max(0, Math.min(currentIndex, maxIndex)); 
-        
-        // Adjust currentTranslate based on potential resize, clamp within new bounds
-        currentTranslate = Math.max(maxNegativeTranslate, Math.min(0, currentTranslate));
-        prevTranslate = currentTranslate; // Sync prevTranslate
-        
-        // Cancel any ongoing animation on resize
-        if (animationFrameId) {
-            cancelAnimationFrame(animationFrameId);
-            animationFrameId = null;
-        }
-        
-        applyTransform(false); // Apply initial/resized transform without animation
-        updateButtonStates(); // Update buttons based on current position
-
-        carouselViewport.style.cursor = 'grab';
-    }
-
-    // Renamed from updateCarouselState to clarify purpose (button clicks/programmatic changes)
-    function animateToSlide(targetIndex) {
-        if (totalSlides === 0) return;
-        
-        // Cancel any ongoing inertia animation before starting slide animation
-        if (animationFrameId) {
-            cancelAnimationFrame(animationFrameId);
-            animationFrameId = null;
-        }
-
-        currentIndex = Math.max(0, Math.min(targetIndex, maxIndex)); // Clamp target index
-        currentTranslate = Math.max(maxNegativeTranslate, Math.min(0, -currentIndex * slideWidthPx));
-        prevTranslate = currentTranslate; // Update prevTranslate for consistency
-        
-        applyTransform(true); // Apply transform WITH CSS animation
-        updateButtonStates(); // Update buttons
-    }
-
-    // New function to apply transform and manage transition
-    function applyTransform(animate = true) {
-      carouselContainer.style.transition = animate 
-          ? 'transform 0.3s ease-out' 
-          : 'none'; 
-      carouselContainer.style.transform = `translateX(${currentTranslate}px)`;
-      
-      // Ensure transition is re-enabled for subsequent interactions if it was disabled
-      // Use requestAnimationFrame for smoother transition re-enabling after 'none'
-      if (!animate) {
-          requestAnimationFrame(() => {
-              requestAnimationFrame(() => { // Double rAF for better cross-browser compatibility
-                  carouselContainer.style.transition = 'transform 0.3s ease-out';
-              });
-          });
-      }
-    }
-
-    // New function to specifically update button states based on currentTranslate
-    function updateButtonStates() {
-        if (totalSlides === 0) {
-            prevBtn.disabled = true;
-            nextBtn.disabled = true;
-            return;
-        }
-        // Disable prev if we are at or very close to the beginning (allowing for float inaccuracies)
-        prevBtn.disabled = currentTranslate >= -0.1;
-        // Disable next if we are at or very close to the maximum scroll position
-        nextBtn.disabled = currentTranslate <= maxNegativeTranslate + 0.1;
-    }
-    
-    setupCarouselHeightAndSlides(); // Initial setup
-    
-    // --- Button Event Listeners ---
-    prevBtn.addEventListener('click', () => {
-      // Calculate target index based on current position for smoother button navigation
-      const currentClosestIndex = Math.round(-currentTranslate / slideWidthPx);
-      animateToSlide(currentClosestIndex - 1); // Animate to the previous slide
-    });
-    
-    nextBtn.addEventListener('click', () => {
-      const currentClosestIndex = Math.round(-currentTranslate / slideWidthPx);
-      animateToSlide(currentClosestIndex + 1); // Animate to the next slide
+      slide.appendChild(img);
+      swiperWrapper.appendChild(slide);
     });
 
-    // --- Inertia Animation Loop ---
-    function inertiaScroll() {
-        if (Math.abs(velocity) < minVelocity) {
-            animationFrameId = null;
-            return; // Stop animation if velocity is too low
-        }
-
-        // Apply velocity
-        currentTranslate += velocity;
-        velocity *= friction; // Apply friction
-
-        // Clamp position within bounds
-        if (currentTranslate > 0) {
-            currentTranslate = 0;
-            velocity = 0; // Stop if hitting the start boundary
-        } else if (currentTranslate < maxNegativeTranslate) {
-            currentTranslate = maxNegativeTranslate;
-            velocity = 0; // Stop if hitting the end boundary
-        }
-
-        applyTransform(false); // Apply transform directly without CSS transition
-        updateButtonStates();
-
-        // Continue animation
-        animationFrameId = requestAnimationFrame(inertiaScroll);
-    }
-
-    // --- Touch Event Listeners ---
-    carouselViewport.addEventListener('touchstart', (e) => {
-        if (totalSlides === 0) return;
-        
-        // Stop any ongoing inertia animation
-        if (animationFrameId) {
-            cancelAnimationFrame(animationFrameId);
-            animationFrameId = null;
-        }
-        
-        isDragging = true;
-        startX = e.touches[0].clientX;
-        lastMoveX = startX; // Initialize for velocity calc
-        lastMoveTime = performance.now(); // Initialize for velocity calc
-        velocity = 0; // Reset velocity
-
-        // Get current position accurately
-        const transformMatrix = window.getComputedStyle(carouselContainer).getPropertyValue('transform');
-        if (transformMatrix !== 'none') {
-            currentTranslate = parseFloat(transformMatrix.split(',')[4] || 0);
-        } // else currentTranslate should hold the correct value from previous state
-        prevTranslate = currentTranslate; // Set prevTranslate to the exact start point
-        
-        carouselContainer.style.transition = 'none'; // Ensure no CSS transition during drag
-        carouselViewport.style.cursor = 'grabbing';
-    }, { passive: true }); 
-
-    carouselViewport.addEventListener('touchmove', (e) => {
-        if (!isDragging || totalSlides === 0) return;
-        
-        const currentX = e.touches[0].clientX;
-        const currentTime = performance.now();
-        const deltaTime = currentTime - lastMoveTime;
-        const deltaX = currentX - lastMoveX;
-
-        if (deltaTime > 0) { // Avoid division by zero
-            velocity = deltaX / deltaTime * 16.67; // Calculate velocity (px/frame approx)
-        }
-
-        currentTranslate = prevTranslate + (currentX - startX); // Calculate position based on start
-
-        // Clamp translation during drag
-        currentTranslate = Math.max(maxNegativeTranslate, Math.min(0, currentTranslate));
-
-        applyTransform(false); // Apply immediate transform
-        updateButtonStates();
-
-        // Update for next move calculation
-        lastMoveX = currentX;
-        lastMoveTime = currentTime;
-    });
-
-    carouselViewport.addEventListener('touchend', () => {
-        if (!isDragging || totalSlides === 0) return;
-        isDragging = false;
-        carouselViewport.style.cursor = 'grab';
-
-        prevTranslate = currentTranslate; // Update prevTranslate to the final dragged position
-
-        // Start inertia animation only if velocity is significant
-        if (Math.abs(velocity) > minVelocity) {
-            // Ensure starting position is clamped before animation
-            currentTranslate = Math.max(maxNegativeTranslate, Math.min(0, currentTranslate));
-            animationFrameId = requestAnimationFrame(inertiaScroll);
-        } else {
-             // Optional: If velocity is too low, ensure final position is applied cleanly
-             applyTransform(false);
-             updateButtonStates();
-        }
-    });
-
-    carouselViewport.addEventListener('touchcancel', () => {
-        if (totalSlides === 0) return; // Check added for safety
-        if (isDragging) { // Only act if dragging was in progress
-           isDragging = false;
-           carouselViewport.style.cursor = 'grab';
-           // Stop potentially running animation or apply final state
-           if (animationFrameId) {
-               cancelAnimationFrame(animationFrameId);
-               animationFrameId = null;
-           }
-           currentTranslate = prevTranslate; // Revert to position before cancel, or just ensure state
-           applyTransform(false);
-           updateButtonStates(); 
-        }
-    });
-
-    // --- Resize Listener ---
-    let resizeTimer;
-    window.addEventListener('resize', () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(() => {
-            setupCarouselHeightAndSlides(); 
-        }, 250);
+    // Initialize Swiper (configuration remains the same)
+    const swiper = new Swiper('.love-story-swiper', {
+      direction: 'horizontal',
+      loop: false,
+      slidesPerView: 'auto',
+      spaceBetween: 15,
+      freeMode: {
+        enabled: true,
+        sticky: false,
+        momentumBounce: true,
+        momentumRatio: 1.0,
+        momentumVelocityRatio: 1.0,
+      },
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+      },
+      grabCursor: true,
+      watchSlidesProgress: false,
+      observer: true,
+      observeParents: true,
+      a11y: {
+        enabled: true,
+        prevSlideMessage: 'Previous slide',
+        nextSlideMessage: 'Next slide',
+        paginationBulletMessage: 'Go to slide {{index}}',
+      },
     });
 
   });
 </script>
+
+<style is:global>
+  /* Styles are now global */
+  .love-story-swiper {
+    width: 100%;
+    padding-bottom: 30px; /* Add padding at the bottom to avoid overlap with pagination */
+  }
+
+  .swiper-wrapper {
+    align-items: center; 
+  }
+
+  .swiper-slide {
+    /* --- Mobile First --- */
+    width: 80%; /* Show ~1.2 slides */
+    aspect-ratio: 1 / 1 !important; /* Maintain square shape - Added !important */
+    filter: grayscale(1) !important; /* Apply grayscale filter - Added !important */
+    overflow: hidden; 
+    box-sizing: border-box;
+    flex-shrink: 0; 
+  }
+
+  /* --- Desktop --- */
+  @media (min-width: 768px) { /* Tailwind 'md' breakpoint */
+    .swiper-slide {
+      width: 20%; /* Show 5 slides */
+      /* aspect-ratio and filter inherit from mobile first */
+    }
+  }
+
+  .swiper-slide img {
+    display: block; 
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* --- Pagination Dots Styling --- */
+  .swiper-pagination {
+    position: absolute; 
+    bottom: 5px; 
+    left: 0; 
+    width: 100%; 
+    text-align: center;
+  }
+
+  .swiper-pagination-bullet {
+    width: 8px;
+    height: 8px;
+    background-color: #ccc; 
+    opacity: 0.5;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 0 4px;
+    transition: background-color 0.3s, opacity 0.3s;
+  }
+
+  .swiper-pagination-bullet-active {
+    background-color: #004AAD; 
+    opacity: 1;
+  }
+</style>
