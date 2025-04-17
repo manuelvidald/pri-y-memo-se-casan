@@ -3,6 +3,10 @@ export default {
     content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
     theme: {
       extend: {
+        fontSize: {
+          '4.5xl': ['2.5875rem', { lineHeight: '2.75rem' }], // Approx 41.4px
+          '5.5xl': ['3.45rem', { lineHeight: '1' }],     // Approx 55.2px
+        },
         colors: {
           'blue-dark': '#004AAD',
           'blue-medium': '#4F84B4',
