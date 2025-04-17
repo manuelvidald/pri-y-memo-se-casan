@@ -32,17 +32,26 @@
   <!-- Mirrored image moved here -->
   
   <div class="photo-carousel-container w-full relative">
+    <!-- Navigation Buttons Container - Moved Above Viewport -->
+    <div class="flex justify-end space-x-2 mb-2 px-4">
+      <button class="nav-button prev p-1 focus:outline-none transition-opacity disabled:opacity-40 disabled:cursor-not-allowed">
+        <svg class="w-6 h-6 text-[#004AAD] hover:opacity-75 transition-opacity" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+      </button>
+      <button class="nav-button next p-1 focus:outline-none transition-opacity disabled:opacity-40 disabled:cursor-not-allowed">
+        <svg class="w-6 h-6 text-[#004AAD] hover:opacity-75 transition-opacity" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </button>
+    </div>
+
     <div id="carousel-viewport" class="relative w-full overflow-hidden">
-      <div id="carousel-items" class="flex transition-transform duration-500 ease-in-out h-full">
+      <div id="carousel-items" class="flex h-full">
         <!-- Slides will be injected here by JavaScript -->
       </div>
-      <!-- Navigation Buttons -->
-      <button class="nav-button prev absolute top-1/2 left-1 transform -translate-y-1/2 p-3 z-10 focus:outline-none transition-opacity disabled:opacity-50 disabled:cursor-not-allowed">
-        <svg class="w-10 h-10 text-white hover:text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
-      </button>
-      <button class="nav-button next absolute top-1/2 right-1 transform -translate-y-1/2 p-3 z-10 focus:outline-none transition-opacity disabled:opacity-50 disabled:cursor-not-allowed">
-        <svg class="w-10 h-10 text-white hover:text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-      </button>
     </div>
   </div>
       
@@ -60,12 +69,18 @@
         return;
     }
 
-    const totalPlaceholders = 10; // Keep this or replace with actual image count later
-    let slidesVisible = 5; // Default for larger screens
-    let slideWidthPercentage = 100 / slidesVisible;
+    const mobileBreakpoint = 768;
+    const slidesToDisplayDesktop = 5;
+    const slidesToDisplayMobilePartial = 1.2; // Show 1 full and part of the next
+
+    let slideWidthPercentage = 100 / slidesToDisplayDesktop; // Default desktop
     let slides = [];
     let totalSlides = 0;
     let currentIndex = 0;
+    let maxIndex = 0; 
+    let slideWidthPx = 0; 
+    let viewportWidth = 0; // Store viewport width
+    let maxNegativeTranslate = 0; // Max scroll position
 
     // --- Touch related variables ---
     let isDragging = false;
@@ -75,15 +90,18 @@
     const swipeThreshold = 30; // Reduced threshold for swipe detection
 
     function setupCarouselHeightAndSlides() {
-        const viewportWidth = carouselViewport.offsetWidth;
+        viewportWidth = carouselViewport.offsetWidth; // Store viewport width
         if (viewportWidth === 0) return;
 
-        // Determine slidesVisible based on viewport width
-        slidesVisible = window.innerWidth < 768 ? 2 : 5; // Use 768px as breakpoint (Tailwind md)
-        slideWidthPercentage = 100 / slidesVisible;
-
-        const slideWidthPx = viewportWidth / slidesVisible;
-        carouselViewport.style.height = `${slideWidthPx}px`; // Maintain aspect ratio
+        const isMobile = window.innerWidth < mobileBreakpoint;
+        
+        slideWidthPercentage = isMobile 
+            ? (100 / slidesToDisplayMobilePartial) 
+            : (100 / slidesToDisplayDesktop);
+        
+        slideWidthPx = viewportWidth * (slideWidthPercentage / 100);
+        
+        carouselViewport.style.height = `${slideWidthPx}px`; // Maintain square aspect ratio based on new width
         carouselViewport.style.overscrollBehavior = 'contain'; // Prevent bounce effect
 
         carouselContainer.innerHTML = ''; // Clear existing placeholders if any
@@ -102,21 +120,17 @@
                 'overflow-hidden', // Ensure image stays within bounds
                 'select-none' // Prevent text selection during drag
             );
-            slide.style.width = `${slideWidthPercentage}%`;
+            // Apply width using px for precision needed with partial visibility
+            slide.style.width = `${slideWidthPx}px`; 
 
             const img = document.createElement('img');
             img.src = `${imageBaseUrl}${imageName}`;
-            img.alt = 'Photo from our story'; // Add alt text for accessibility
+            img.alt = 'Photo from our story';
             img.classList.add(
-                'w-full',       // Make image fill the slide width
-                'h-full',       // Make image fill the slide height
-                'object-cover', // Cover the area, cropping if necessary
-                'aspect-square',// Maintain square aspect ratio (redundant with h-full w-full on square container, but safe)
-                'filter',       // Enable filter utility
-                'grayscale'     // Apply grayscale filter
+                'w-full', 'h-full', 'object-cover', 'aspect-square',
+                'filter', 'grayscale'
             );
-            img.loading = 'lazy'; // Improve initial page load
-            // Prevent dragging images causing issues
+            img.loading = 'lazy';
             img.ondragstart = () => false; 
 
             slide.appendChild(img);
@@ -124,114 +138,135 @@
         });
         // --- End image loading ---
 
-        // Recalculate state after setup
         slides = carouselContainer.querySelectorAll('.photo-carousel-slide');
         totalSlides = slides.length;
-        // Ensure currentIndex is valid after resize
-        const maxIndex = Math.max(0, totalSlides - slidesVisible);
-        currentIndex = Math.min(currentIndex, maxIndex); 
         
-        updateCarouselState(false); // Update without animation initially
+        // Max index allows scrolling until the start of the last slide is aligned with the start of the viewport
+        maxIndex = totalSlides > 0 ? totalSlides - 1 : 0;
+        
+        // Calculate max scroll position: allows scrolling until end of last slide aligns with end of viewport
+        const totalCarouselWidth = totalSlides * slideWidthPx;
+        maxNegativeTranslate = totalCarouselWidth > viewportWidth ? -(totalCarouselWidth - viewportWidth) : 0;
+
+        // Ensure currentIndex is valid after setup/resize
+        currentIndex = Math.max(0, Math.min(currentIndex, maxIndex)); 
+        
+        // Adjust currentTranslate based on potential resize, clamp within new bounds
+        currentTranslate = Math.max(maxNegativeTranslate, Math.min(0, currentTranslate));
+        prevTranslate = currentTranslate; // Sync prevTranslate
+        applyTransform(false); // Apply initial/resized transform without animation
+        updateButtonStates(); // Update buttons based on current position
+
         carouselViewport.style.cursor = 'grab';
     }
 
-    function updateCarouselState(animate = true) {
-        if (totalSlides === 0) return; // Check if slides exist
+    // Renamed from updateCarouselState to clarify purpose (button clicks/programmatic changes)
+    function animateToSlide(targetIndex) {
+        if (totalSlides === 0) return;
 
-        const maxIndex = Math.max(0, totalSlides - slidesVisible);
-        currentIndex = Math.max(0, Math.min(currentIndex, maxIndex));
+        currentIndex = Math.max(0, Math.min(targetIndex, maxIndex)); // Clamp target index
+        currentTranslate = Math.max(maxNegativeTranslate, Math.min(0, -currentIndex * slideWidthPx));
+        prevTranslate = currentTranslate; // Update prevTranslate for consistency
         
-        currentTranslate = -currentIndex * (carouselViewport.offsetWidth / slidesVisible);
+        applyTransform(true); // Apply transform WITH animation
+        updateButtonStates(); // Update buttons
+    }
 
-        if (animate) {
-            carouselContainer.style.transition = 'transform 0.5s ease-in-out';
-        } else {
-            carouselContainer.style.transition = 'none'; // Disable animation for instant updates
+    // New function to apply transform and manage transition
+    function applyTransform(animate = true) {
+      carouselContainer.style.transition = animate 
+          ? 'transform 0.3s ease-out' 
+          : 'none'; 
+      carouselContainer.style.transform = `translateX(${currentTranslate}px)`;
+      
+      // Ensure transition is re-enabled for subsequent interactions if it was disabled
+      // Use requestAnimationFrame for smoother transition re-enabling after 'none'
+      if (!animate) {
+          requestAnimationFrame(() => {
+              requestAnimationFrame(() => { // Double rAF for better cross-browser compatibility
+                  carouselContainer.style.transition = 'transform 0.3s ease-out';
+              });
+          });
+      }
+    }
+
+    // New function to specifically update button states based on currentTranslate
+    function updateButtonStates() {
+        if (totalSlides === 0) {
+            prevBtn.disabled = true;
+            nextBtn.disabled = true;
+            return;
         }
-        
-        carouselContainer.style.transform = `translateX(${currentTranslate}px)`;
-        
-        // Update button states
-        prevBtn.disabled = currentIndex === 0;
-        nextBtn.disabled = currentIndex >= maxIndex; 
-
-        // Allow animation for subsequent updates
-        if (!animate) {
-           // Force reflow to apply non-animated state before re-enabling animation
-           carouselContainer.offsetHeight; 
-           carouselContainer.style.transition = 'transform 0.5s ease-in-out';
-        }
+        // Disable prev if we are at or very close to the beginning (allowing for float inaccuracies)
+        prevBtn.disabled = currentTranslate >= -0.1;
+        // Disable next if we are at or very close to the maximum scroll position
+        nextBtn.disabled = currentTranslate <= maxNegativeTranslate + 0.1;
     }
     
     setupCarouselHeightAndSlides(); // Initial setup
     
     // --- Button Event Listeners ---
     prevBtn.addEventListener('click', () => {
-      currentIndex = Math.max(currentIndex - 1, 0);
-      updateCarouselState();
+      // Calculate target index based on current position for smoother button navigation
+      const currentClosestIndex = Math.round(-currentTranslate / slideWidthPx);
+      animateToSlide(currentClosestIndex - 1); // Animate to the previous slide
     });
     
     nextBtn.addEventListener('click', () => {
-      const maxIndex = Math.max(0, totalSlides - slidesVisible);
-      currentIndex = Math.min(currentIndex + 1, maxIndex);
-      updateCarouselState();
+      const currentClosestIndex = Math.round(-currentTranslate / slideWidthPx);
+      animateToSlide(currentClosestIndex + 1); // Animate to the next slide
     });
 
     // --- Touch Event Listeners ---
     carouselViewport.addEventListener('touchstart', (e) => {
+        if (totalSlides === 0) return;
         isDragging = true;
         startX = e.touches[0].clientX;
-        // Get the current transform value (numeric part)
         const transformMatrix = window.getComputedStyle(carouselContainer).getPropertyValue('transform');
         if (transformMatrix !== 'none') {
-            prevTranslate = parseInt(transformMatrix.split(',')[4] || 0);
+            prevTranslate = parseFloat(transformMatrix.split(',')[4] || 0);
         } else {
-            prevTranslate = 0;
+            // Fallback if transform is 'none' (shouldn't usually happen during interaction)
+            prevTranslate = currentTranslate; 
         }
-        carouselContainer.style.transition = 'none'; // Disable animation while dragging
+        carouselContainer.style.transition = 'none';
         carouselViewport.style.cursor = 'grabbing';
-    }, { passive: true }); // Use passive for potentially better scroll performance
+    }, { passive: true }); 
 
     carouselViewport.addEventListener('touchmove', (e) => {
-        if (!isDragging) return;
+        if (!isDragging || totalSlides === 0) return;
         const currentX = e.touches[0].clientX;
         const deltaX = currentX - startX;
         currentTranslate = prevTranslate + deltaX;
-        // Apply immediate transform for visual feedback
-        carouselContainer.style.transform = `translateX(${currentTranslate}px)`;
+
+        // Clamp translation within bounds [maxNegativeTranslate, 0]
+        currentTranslate = Math.max(maxNegativeTranslate, Math.min(0, currentTranslate));
+
+        // Apply immediate transform for visual feedback WITHOUT animation
+        applyTransform(false);
+        updateButtonStates(); // Update buttons immediately during drag
     });
 
     carouselViewport.addEventListener('touchend', () => {
-        if (!isDragging) return;
+        if (!isDragging || totalSlides === 0) return;
         isDragging = false;
-        carouselContainer.style.transition = 'transform 0.5s ease-in-out'; // Re-enable animation
         carouselViewport.style.cursor = 'grab';
 
-        const movedBy = currentTranslate - prevTranslate;
-        const maxIndex = Math.max(0, totalSlides - slidesVisible);
-        // const slideWidthPx = carouselViewport.offsetWidth / slidesVisible; // Already defined above
-
-        // --- Reworked Snap Logic ---
-        // Determine index change based on swipe distance and direction
-        if (Math.abs(movedBy) > swipeThreshold) {
-            if (movedBy < 0) { // Swiped left (towards next)
-                currentIndex = Math.min(currentIndex + 1, maxIndex);
-            } else { // Swiped right (towards previous)
-                currentIndex = Math.max(currentIndex - 1, 0);
-            }
-        } // Else: If swipe is too small, snap back to the original currentIndex (no change)
-        // --- End Reworked Snap Logic ---
-
-        // Snap to the updated or original currentIndex
-        updateCarouselState(); 
+        // Store the final position achieved by dragging
+        prevTranslate = currentTranslate;
+        
+        // NO automatic snapping/animation here. Position is kept.
+        // Buttons are already updated during touchmove.
     });
 
     carouselViewport.addEventListener('touchcancel', () => {
-        if (!isDragging) return;
+        if (!isDragging || totalSlides === 0) return;
         isDragging = false;
-        carouselContainer.style.transition = 'transform 0.5s ease-in-out';
         carouselViewport.style.cursor = 'grab';
-        updateCarouselState(); // Snap back if touch is cancelled
+        // Optional: Snap back to prevTranslate if needed, but current behavior is likely fine
+        // currentTranslate = prevTranslate;
+        // applyTransform(false);
+        updateButtonStates(); 
     });
 
     // --- Resize Listener ---
@@ -239,7 +274,6 @@
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
-            // Recalculate everything on resize
             setupCarouselHeightAndSlides(); 
         }, 250);
     });
