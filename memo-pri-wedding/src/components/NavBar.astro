@@ -52,7 +52,7 @@ const navItems = [
       {navItems.map((item) => (
         <a
           href={item.url}
-          class="text-white hover:text-blue-medium transition-colors p-3 rounded font-ibm-plex text-center text-lg block"
+          class="text-white hover:text-blue-medium transition-colors p-3 rounded font-ibm-plex text-center text-lg block focus:outline-none focus:ring-0"
           onclick="const menu = document.getElementById('mobile-menu'); menu.classList.add('max-h-0'); menu.classList.remove('max-h-screen', 'py-4');"
         >
           {item.name}
