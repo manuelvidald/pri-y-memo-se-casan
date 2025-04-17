@@ -28,6 +28,7 @@ export default {
           'antic-didone': ['"Antic Didone"', 'serif'],
           'miltonian': ['"Miltonian One"', 'cursive'],
           'milton-normal': ['Milton One Normal', 'cursive'],
+          'lichtner': ['Lichtner', 'sans-serif'],
         },
         backgroundImage: {
           'paper-texture': "url('/images/paper-texture.jpg')",
